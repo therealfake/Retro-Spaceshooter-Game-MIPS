@@ -33,8 +33,13 @@
 # - (write here, if any)
 #
 #####################################################################
+#adresses
 .eqv baseAddress .word 0x10008000 # base address for the display
 .eqv keystrokeAddress .word 0xffff0000 # memory address for the keystroke event / if a key has been pressed
+#colors
+.eqv lightBrown 0xa0522d
+.eqv darkBrown 0x654321
+#ascii values for keyboard input
 .eqv w_ASCII 0x77 # ascii value for w in hex
 .eqv a_ASCII 0x61 # ascii value for a in hex
 .eqv s_ASCII 0x73 # ascii value for s in hex
@@ -42,7 +47,7 @@
 .eqv p_ASCII 0x70 # ascii value for p in hex
 
 .data
-
+enemyBlock: .word 0, 0 # obstacle x, y coordinates 
 
 
 .text
