@@ -39,6 +39,7 @@
 .eqv a_ASCII 0x61 # ascii value for a in hex
 .eqv s_ASCII 0x73 # ascii value for s in hex
 .eqv d_ASCII 0x64 # ascii value for d in hex
+.eqv p_ASCII 0x70 # ascii value for p in hex
 
 .data
 
@@ -51,18 +52,20 @@ user_input:
 	beq $t8, 1, keypress_happened # check if they keystroke event occurred.
 keypress_happened:
 	lw $t2, 4($t9) # 4($t9) holds the ascii value of the key pressed. NOTE: this assumes $t9 is set to 0xfff0000 from before
-	beq $t2, w_ASCII, respond_to_w # ASCII code of 'w' is 0x77 or 119 in decimal
-	beq $t2, a_ASCII, respond_to_a # ASCII code of 'a' is 0x61 or 97 in decimal
-	beq $t2, s_ASCII, respond_to_s # ASCII code of 's' is 0x73 or 115 in decimal
-	beq $t2, d_AsCII, respond_to_d # ASCII code of 'd' is 0x64 or 100 in decimal
-respond_to_w:
+	#beq $t2, w_ASCII, respond_to_w # ASCII code of 'w' is 0x77 or 119 in decimal
+	#beq $t2, a_ASCII, respond_to_a # ASCII code of 'a' is 0x61 or 97 in decimal
+	#beq $t2, s_ASCII, respond_to_s # ASCII code of 's' is 0x73 or 115 in decimal
+	#beq $t2, d_AsCII, respond_to_d # ASCII code of 'd' is 0x64 or 100 in decimal
+	beq $t2, p_AsCII, reset # ASCII code of 'p' is 0x70 or 112 in decimal
+#respond_to_w:
 	# move up if not already at the top of the screen
-respond_to_a:
+#respond_to_a:
 	# move to the left
-respond_to_s:
+#respond_to_s:
 	# move to the right
-respond_to_d:
+#respond_to_d:
 	# move down if not already at the bottom of the screen
-
+reset:
+	
 
 
