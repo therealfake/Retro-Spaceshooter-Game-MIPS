@@ -223,7 +223,6 @@ allEnemies:
 	jal enemyLocation
 	jal enemyLocation
 	jal enemyLocation
-	jal enemyLocation
 	lw $ra, 0($sp) # load the return address
 	addi $sp, $sp, 4 # move the stack down
 	jr $ra
