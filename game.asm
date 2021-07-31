@@ -37,8 +37,13 @@
 .eqv baseAddress .word 0x10008000 # base address for the display
 .eqv keystrokeAddress .word 0xffff0000 # memory address for the keystroke event / if a key has been pressed
 #colors
-.eqv lightBrown 0xa0522d
-.eqv darkBrown 0x654321
+.eqv lightBrown 0xa0522d # asteroid color
+.eqv darkBrown 0x654321 # asteroid color
+.eqv white 0xffffff # ship colour	
+.eqv grey 0x808080 #ship colour
+.eqv red 0xff0000 # game over message colour
+.eqv green 0x00ff00 # game over screen "score" colour
+.eqv black 0x000000
 #ascii values for keyboard input
 .eqv w_ASCII 0x77 # ascii value for w in hex
 .eqv a_ASCII 0x61 # ascii value for a in hex
@@ -71,6 +76,19 @@ keypress_happened:
 #respond_to_d:
 	# move down if not already at the bottom of the screen
 reset:
+	# draw screen black
+	jal drawBlackScreen
+	# reset health
+	# reset score W
+drawBlackScreen:
+	addi $sp, $sp, -4 # move stack up
+	sw $ra, 0($sp) #store return address into stack
+	addi $t0, $zero, 0
+	addi $t0, $zero, 32
+	beq $t0, $t1, 
+drawBlackRow:
+	la $t0, black
+	
 	
 
 
