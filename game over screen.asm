@@ -17,7 +17,7 @@ ggsMessage: .word 0,0
 obstacle: .word 0, 0 #x, y coordinates of the enemy block
 game: .word 18, 3 # x,y coordinates of the top right of the word "game" 
 over: .word 28, 9 # x,y coordinates of the top right of the word "end"
-score: .word 24, 15 # x,y coordinates of the top right of the word "score"
+score: .word 23, 15 # x,y coordinates of the top right of the word "score"
 .text
 gameOverPhase:
 	# redraw screen to be black
