@@ -12,7 +12,7 @@ li $t0, 0x10008594
 drawShip:
 	la $t1, white	#load the colour white into $t1
 	la $t2, grey	#load the colour grey into $t2
-	sw $t1, 0($t0)
+	#sw $t1, 0($t0)
 	sw $t1, 128($t0)
 	sw $t1, 256($t0)
 	sw $t1, 384($t0)
@@ -24,14 +24,14 @@ drawShip:
 	sw $t1, 640($t0)
 	sw $t1, 768($t0)
 	sw $t1, 896($t0)
-	sw $t1, 1024($t0)
-	sw $t1, 124($t0)
+	#sw $t1, 1024($t0)
+	#sw $t1, 124($t0)
 	sw $t1, 252($t0)
 	sw $t1, 380($t0)
 	sw $t2, 508($t0)
 	sw $t1, 636($t0)
 	sw $t1, 764($t0)
-	sw $t1, 892($t0)
+	#sw $t1, 892($t0)
 	sw $t1, 376($t0)
 	sw $t1, 504($t0)
 	sw $t1, 632($t0)
