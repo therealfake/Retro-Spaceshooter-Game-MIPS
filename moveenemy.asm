@@ -76,7 +76,7 @@ enemyLocation:
 	
 	li $v0, 42         # Service 42, random int range
 	li $a0, 0          # Select random generator 0
-	li $a1, 26	   # Upper bound of random number generator is 30
+	li $a1, 25	   # Upper bound of random number generator is 30
 	syscall            # Generate random int (returns in $a0)
 	
 	la $t0, enemyBlock #$t0 holds the address of the enemy's top right corner
@@ -84,10 +84,10 @@ enemyLocation:
 	
 	li $v0, 42         # Service 42, random int range
 	li $a0, 0          # Select random generator 0
-	li $a1, 15	   # Upper bound of random number generator is 16
+	li $a1, 2	   # Upper bound of random number generator is 16
 	syscall            # Generate random int (returns in $a0)
 	
-	addi $a0, $a0, 16 #random int *2
+	addi $a0, $a0, 29 #random int *2
 	sw $a0, 0($t0) #save random x coordinate (between 16 and 32) into the enemy array
 	
 	la $t0, darkBrown  # $t0 stores the dark brown colour

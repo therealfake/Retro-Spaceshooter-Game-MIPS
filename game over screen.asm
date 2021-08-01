@@ -5,7 +5,8 @@
 # - Display height in pixels: 256
 # - Base Address for Display: 0x10008000 ($gp)
 #
-
+# WARNING: THERE WILL BE CONFLICT AS THE DRAW ENEMY IS DIFF THAN FOR THE MOVE ENEMY'S VERSION OF DRAW ENEMY
+#
 .eqv lightBrown 0xa0522d
 .eqv darkBrown 0x654321
 .eqv red 0xff0000
@@ -14,7 +15,7 @@
 
 .data
 ggsMessage: .word 0,0
-obstacle: .word 0, 0 #x, y coordinates of the enemy block
+obstacle: .word 0, 0 #x, y coordinates of the obstacle
 game: .word 18, 3 # x,y coordinates of the top right of the word "game" 
 over: .word 28, 9 # x,y coordinates of the top right of the word "end"
 score: .word 23, 15 # x,y coordinates of the top right of the word "score"
@@ -30,188 +31,188 @@ gameOverPhase:
 	# draw reset
 	j end
 drawGameOver:
-	la $t0, red # load the red colour into $t0
-	la $t1, baseAddress # $t1 has the display address
-	la $t2, game # $t2 holds the top right corner of the word "game"
-	lw $t2, 4($t2) # $t2 holds the y coordinate
-	sll $t3, $t2, 5 # $t3 holds y coordinate * 32
-	la $t2, game # $t2 holds the top right corner of the word "game"
-	lw $t2, 0($t2) # $t2 holds the x coordinate
-	add $t3, $t3, $t2 # $t3 holds 32*y + x
-	sll $t3, $t3, 2 # $t3 holds 4*(32*y + x)
-	add $t3, $t3, $t1 # $t3 holds 4*(32*y + x) + baseAddress
-	sw $t0, 0($t3)#first row of the word game
-	sw $t0, -4($t3)
-	sw $t0, -16($t3)
-	sw $t0, -20($t3)
-	sw $t0, -24($t3)
-	sw $t0, -40($t3)
-	sw $t0, -52($t3)
-	sw $t0, -56($t3)
-	sw $t0, -60($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, -4($t3) #second row
-	sw $t0, -12($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -44($t3)
-	sw $t0, -60($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, -0($t3) #third row
-	sw $t0, -4($t3) 
-	sw $t0, -12($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -40($t3)
-	sw $t0, -44($t3)
-	sw $t0, -52($t3)
-	sw $t0, -60($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, -4($t3) #fourth row
-	sw $t0, -12($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -44($t3)
-	sw $t0, -52($t3)
-	sw $t0, -60($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, -0($t3) #fifth row
-	sw $t0, -4($t3) 
-	sw $t0, -12($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -44($t3)
-	sw $t0, -52($t3)
-	sw $t0, -56($t3)
-	sw $t0, -60($t3)
-	la $t1, baseAddress # $t1 has the display address
+	la $s0, red # load the red colour into $s0
+	la $s1, baseAddress # $s1 has the base address
+	la $s2, game # $s2 holds the top right corner of the word "game"
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the base address
+	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	sw $s0, 0($s5)#first row of the word game
+	sw $s0, -4($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -24($s5)
+	sw $s0, -40($s5)
+	sw $s0, -52($s5)
+	sw $s0, -56($s5)
+	sw $s0, -60($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -4($s5) #second row
+	sw $s0, -12($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -60($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -0($s5) #third row
+	sw $s0, -4($s5) 
+	sw $s0, -12($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -40($s5)
+	sw $s0, -44($s5)
+	sw $s0, -52($s5)
+	sw $s0, -60($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -4($s5) #fourth row
+	sw $s0, -12($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -52($s5)
+	sw $s0, -60($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -0($s5) #fifth row
+	sw $s0, -4($s5) 
+	sw $s0, -12($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -52($s5)
+	sw $s0, -56($s5)
+	sw $s0, -60($s5)
+	la $t1, baseAddress # $t1 has the base address
 	la $t2, over # $t2 holds the top right corner of the word "over"
 	lw $t2, 4($t2) # $t2 holds the y coordinate
-	sll $t3, $t2, 5 # $t3 holds y coordinate * 32
+	sll $s5, $t2, 5 # $s5 holds y coordinate * 32
 	la $t2, over # $t2 holds the top right corner of the word "over"
 	lw $t2, 0($t2) # $t2 holds the x coordinate
-	add $t3, $t3, $t2 # $t3 holds 32*y + x
-	sll $t3, $t3, 2 # $t3 holds 4*(32*y + x)
-	add $t3, $t3, $t1 # $t3 holds 4*(32*y + x) + baseAddress
-	sw $t0, 0($t3)#first row of the word over
-	sw $t0, -4($t3)
-	sw $t0, -8($t3)
-	sw $t0, -16($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -44($t3)
-	sw $t0, -48($t3)
-	sw $t0, -52($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, 0($t3)# second row
-	sw $t0, -8($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -44($t3)
-	sw $t0, -52($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, 0($t3)# third row
-	sw $t0, -4($t3)
-	sw $t0, -8($t3)
-	sw $t0, -16($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -44($t3)
-	sw $t0, -52($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, -4($t3) # fourth row
-	sw $t0, -8($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -44($t3)
-	sw $t0, -52($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, 0($t3)#fifth row
-	sw $t0, -8($t3)
-	sw $t0, -16($t3)
-	sw $t0, -20($t3)
-	sw $t0, -32($t3)
-	sw $t0, -44($t3)
-	sw $t0, -48($t3)
-	sw $t0, -52($t3)
+	add $s5, $s5, $t2 # $s5 holds 32*y + x
+	sll $s5, $s5, 2 # $s5 holds 4*(32*y + x)
+	add $s5, $s5, $t1 # $s5 holds 4*(32*y + x) + baseAddress
+	sw $s0, 0($s5)#first row of the word over
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -48($s5)
+	sw $s0, -52($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, 0($s5)# second row
+	sw $s0, -8($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -52($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, 0($s5)# third row
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -52($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -4($s5) # fourth row
+	sw $s0, -8($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -52($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, 0($s5)#fifth row
+	sw $s0, -8($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -32($s5)
+	sw $s0, -44($s5)
+	sw $s0, -48($s5)
+	sw $s0, -52($s5)
 	jr $ra
 drawScore:
-	la $t0, green # $t0 has the green colour
-	la $t1, baseAddress # $t1 has the display address
-	la $t2, score # $t2 holds the top right corner of the word "score"
-	lw $t2, 4($t2) # $t2 holds the y coordinate
-	sll $t3, $t2, 5 # $t3 holds y coordinate * 32
-	la $t2, score # $t2 holds the top right corner of the word "score"
-	lw $t2, 0($t2) # $t2 holds the x coordinate
-	add $t3, $t3, $t2 # $t3 holds 32*y + x
-	sll $t3, $t3, 2 # $t3 holds 4*(32*y + x)
-	add $t3, $t3, $t1 # $t3 holds 4*(32*y + x) + baseAddress
-	sw $t0, 0($t3)#first row of the word score
-	sw $t0, -4($t3)
-	sw $t0, -12($t3)
-	sw $t0, -16($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -32($t3)
-	sw $t0, -36($t3)
-	sw $t0, -44($t3)
-	sw $t0, -48($t3)
-	sw $t0, -52($t3)
-	sw $t0, -60($t3)
-	sw $t0, -64($t3)
-	sw $t0, -68($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, 8($t3)# second row
-	sw $t0, -4($t3)
-	sw $t0, -12($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -52($t3)
-	sw $t0, -68($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, 0($t3)# third row
-	sw $t0, -4($t3)
-	sw $t0, -12($t3)
-	sw $t0, -16($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -52($t3)
-	sw $t0, -60($t3)
-	sw $t0, -64($t3)
-	sw $t0, -68($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, 8($t3)# fourth row
-	sw $t0, -4($t3)
-	sw $t0, -16($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -36($t3)
-	sw $t0, -52($t3)
-	sw $t0, -60($t3)
-	addi $t3, $t3, 128 #set to next row, rightmost pixel
-	sw $t0, 0($t3)#fifth row
-	sw $t0, -4($t3)
-	sw $t0, -12($t3)
-	sw $t0, -20($t3)
-	sw $t0, -28($t3)
-	sw $t0, -32($t3)
-	sw $t0, -36($t3)
-	sw $t0, -44($t3)
-	sw $t0, -48($t3)
-	sw $t0, -52($t3)
-	sw $t0, -60($t3)
-	sw $t0, -64($t3)
-	sw $t0, -68($t3)
+	la $s0, green # $s0 has the green colour
+	la $s1, baseAddress # $t1 has the base address
+	la $s2, score # $t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the base address
+	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	sw $s0, 0($s5)#first row of the word score
+	sw $s0, -4($s5)
+	sw $s0, -12($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -32($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -48($s5)
+	sw $s0, -52($s5)
+	sw $s0, -60($s5)
+	sw $s0, -64($s5)
+	sw $s0, -68($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, 8($s5)# second row
+	sw $s0, -4($s5)
+	sw $s0, -12($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -52($s5)
+	sw $s0, -68($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, 0($s5)# third row
+	sw $s0, -4($s5)
+	sw $s0, -12($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -52($s5)
+	sw $s0, -60($s5)
+	sw $s0, -64($s5)
+	sw $s0, -68($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, 8($s5)# fourth row
+	sw $s0, -4($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -52($s5)
+	sw $s0, -60($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, 0($s5)#fifth row
+	sw $s0, -4($s5)
+	sw $s0, -12($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -32($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -48($s5)
+	sw $s0, -52($s5)
+	sw $s0, -60($s5)
+	sw $s0, -64($s5)
+	sw $s0, -68($s5)
 	jr $ra
 allEnemies:
 	addi $sp, $sp, -4 # move the stack up
@@ -240,10 +241,9 @@ enemyLocation:
 	
 	li $v0, 42         # Service 42, random int range
 	li $a0, 0          # Select random generator 0
-	li $a1, 27	   # Upper bound of random number generator is 16
+	li $a1, 31	   # Upper bound of random number generator is 16
 	syscall            # Generate random int (returns in $a0)
 	
-	addi $a0, $a0, 5 #random int *2
 	sw $a0, 0($t0) #save random x coordinate (between 16 and 32) into the enemy array
 	
 	la $t0, darkBrown  # $t0 stores the dark brown colour
@@ -258,84 +258,85 @@ enemyLocation:
 	
 	lw $ra, 0($sp) # restor this function's return adress
 	addi $sp, $sp, 4 # move the stack down
+	
 	jr $ra
 drawEnemy: 
-	lw $t0, 0($sp) # $t0 holds colour popped off from the stack
+	lw $s0, 0($sp) # $s0 holds colour popped off from the stack
 	addi $sp, $sp, 4 # update stack down
-	lw $t4, 0($sp) # $t4 holds colour popped off from the stack
+	lw $s1, 0($sp) # $s1 holds colour popped off from the stack
 	addi $sp, $sp, 4 # update stack down
-	la $t1, baseAddress # $t1 has the display address
-	la $t2, obstacle # $t2 holds the top right corner of the enemy block
-	lw $t2, 4($t2) # $t2 holds the y coordinate
-	sll $t3, $t2, 5 # $t3 holds y coordinate * 32
-	la $t2, obstacle # $t2 holds the top right corner of the enemy block
-	lw $t2, 0($t2) # $t2 holds the x coordinate
-	add $t3, $t3, $t2 # $t3 holds 32*y + x
-	sll $t3, $t3, 2 # $t3 holds 4*(32*y + x)
-	add $t3, $t3, $t1 # $t3 holds 4*(32*y + x) + displayAddress
+	la $s2, obstacle # $s2 holds the top right corner of the obstacle
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the base address
+	add $s5, $s5, $s4 # $s5 holds baseAddress + 4*(32*y + x)
+	
 	
 	# first row
-	#sw $t0, 0($t3)
-	sw $t0, -4($t3)
-	sw $t0, -8($t3)
-	sw $t0, -12($t3)
-	#sw $t0, -16($t3)
-	#sw $t0, -20($t3)
+	#sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $t0, -12($s5)
+	#sw $s0, -16($s5)
+	#sw $s0, -20($s5)
 	
 	#set to next row, rightmost pixel
-	addi $t3, $t3, 128
+	addi $s5, $s5, 128
 	
 	# second row
-	sw $t0, 0($t3)
-	sw $t0, -4($t3)
-	sw $t4, -8($t3)
-	sw $t4, -12($t3)
-	sw $t0, -16($t3)
-	#sw $t0, -20($t3)
+	sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s1, -8($s5)
+	sw $s1, -12($s5)
+	sw $s0, -16($s5)
+	#sw $s0, -20($s5)
 	
 	#set to next row, rightmost pixel
-	addi $t3, $t3, 128
+	addi $s5, $s5, 128
 	
 	# third row
-	sw $t0, 0($t3)
-	sw $t0, -4($t3)
-	sw $t0, -8($t3)
-	sw $t4, -12($t3)
-	sw $t4, -16($t3)
-	sw $t0, -20($t3)
+	sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $s1, -12($s5)
+	sw $s1, -16($s5)
+	sw $s0, -20($s5)
 	
 	#set to next row, rightmost pixel
-	addi $t3, $t3, 128
+	addi $s5, $s5, 128
 	
 	# fourth row
-	sw $t0, 0($t3)
-	sw $t4, -4($t3)
-	sw $t0, -8($t3)
-	sw $t0, -12($t3)
-	sw $t4, -16($t3)
-	sw $t0, -20($t3)
+	sw $s0, 0($s5)
+	sw $s1, -4($s5)
+	sw $s0, -8($s5)
+	sw $s0, -12($s5)
+	sw $s1, -16($s5)
+	sw $s0, -20($s5)
 	
 	#set to next row, rightmost pixel
-	addi $t3, $t3, 128
+	addi $s5, $s5, 128
 	
 	# fifth row
-	sw $t0, 0($t3)
-	sw $t0, -4($t3)
-	sw $t4, -8($t3)
-	sw $t0, -12($t3)
-	sw $t0, -16($t3)
-	sw $t0, -20($t3)
+	sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s1, -8($s5)
+	sw $s0, -12($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
 	
 	#set to next row, rightmost pixel
-	addi $t3, $t3, 128
+	addi $s5, $s5, 128
 	
 	# sixth row
-	#sw $t0, 0($t3)
-	sw $t0, -4($t3)
-	sw $t0, -8($t3)
-	sw $t0, -12($t3)
-	sw $t0, -16($t3)
-	#sw $t0, -20($t3)
+	#sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $s0, -12($s5)
+	sw $s0, -16($s5)
+	#sw $s0, -20($s5)
 	
 	#return to line after function call
 	jr $ra

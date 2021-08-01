@@ -8,7 +8,7 @@
 
 .eqv lightBrown 0xa0522d
 .eqv darkBrown 0x654321
-.eqv displayAddress 0x10008000
+.eqv baseAddress 0x10008000
 
 .data
 initialBlock: .word 4, 13 #x, y coordinates of the top right corner of the initial block
@@ -65,8 +65,8 @@ drawEnemy:
 	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
 	add $s4, $s4, $s3 # $s4 holds 32*y + x
 	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
-	la $s5, displayAddress # $s5 has the display address
-	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the display address
+	add $s5, $s5, $s4 # $s5 holds baseAddress + 4*(32*y + x)
 	
 	
 	# first row
