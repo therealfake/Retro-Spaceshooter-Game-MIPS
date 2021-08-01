@@ -37,7 +37,7 @@ enemyLocation:
 	li $a1, 15	   # Upper bound of random number generator is 16
 	syscall            # Generate random int (returns in $a0)
 	
-	addi $a0, $a0, 16 #random int *2
+	addi $a0, $a0, 16 #random int + 16 to make it be the righter half
 	sw $a0, 0($t0) #save random x coordinate (between 16 and 32) into the enemy array
 	
 	la $t0, darkBrown  # $t0 stores the dark brown colour
@@ -55,82 +55,82 @@ enemyLocation:
 	
 	jr $ra
 drawEnemy: 
-	lw $s0, 0($sp) # $t0 holds colour popped off from the stack
+	lw $s0, 0($sp) # $s0 holds colour popped off from the stack
 	addi $sp, $sp, 4 # update stack down
-	lw $s4, 0($sp) # $t4 holds colour popped off from the stack
+	lw $s1, 0($sp) # $s1 holds colour popped off from the stack
 	addi $sp, $sp, 4 # update stack down
-	la $s1, displayAddress # $t1 has the display address
-	la $s2, enemyBlock # $t2 holds the top right corner of the enemy block
-	lw $s2, 4($s2) # $t2 holds the y coordinate
-	sll $s3, $s2, 5 # $t3 holds y coordinate * 32
-	la $s2, enemyBlock # $t2 holds the top right corner of the enemy block
-	lw $s2, 0($s2) # $t2 holds the x coordinate
-	add $s3, $s3, $s2 # $t3 holds 32*y + x
-	sll $s3, $s3, 2 # $t3 holds 4*(32*y + x)
-	add $s3, $s3, $s1 # $t3 holds 4*(32*y + x) + displayAddress
+	la $s2, enemyBlock # $s2 holds the top right corner of the enemy block
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, displayAddress # $s5 has the display address
+	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	
 	
 	# first row
-	#sw $s0, 0($s3)
-	sw $s0, -4($s3)
-	sw $s0, -8($s3)
-	sw $t0, -12($s3)
-	#sw $s0, -16($s3)
-	#sw $s0, -20($s3)
+	#sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $t0, -12($s5)
+	#sw $s0, -16($s5)
+	#sw $s0, -20($s5)
 	
 	#set to next row, rightmost pixel
-	addi $s3, $s3, 128
+	addi $s5, $s5, 128
 	
 	# second row
-	sw $s0, 0($s3)
-	sw $s0, -4($s3)
-	sw $s4, -8($s3)
-	sw $s4, -12($s3)
-	sw $s0, -16($s3)
-	#sw $s0, -20($s3)
+	sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s1, -8($s5)
+	sw $s1, -12($s5)
+	sw $s0, -16($s5)
+	#sw $s0, -20($s5)
 	
 	#set to next row, rightmost pixel
-	addi $s3, $s3, 128
+	addi $s5, $s5, 128
 	
 	# third row
-	sw $s0, 0($s3)
-	sw $s0, -4($s3)
-	sw $s0, -8($s3)
-	sw $s4, -12($s3)
-	sw $s4, -16($s3)
-	sw $s0, -20($s3)
+	sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $s1, -12($s5)
+	sw $s1, -16($s5)
+	sw $s0, -20($s5)
 	
 	#set to next row, rightmost pixel
-	addi $s3, $s3, 128
+	addi $s5, $s5, 128
 	
 	# fourth row
-	sw $s0, 0($s3)
-	sw $s4, -4($s3)
-	sw $s0, -8($s3)
-	sw $s0, -12($s3)
-	sw $s4, -16($s3)
-	sw $s0, -20($s3)
+	sw $s0, 0($s5)
+	sw $s1, -4($s5)
+	sw $s0, -8($s5)
+	sw $s0, -12($s5)
+	sw $s1, -16($s5)
+	sw $s0, -20($s5)
 	
 	#set to next row, rightmost pixel
-	addi $s3, $s3, 128
+	addi $s5, $s5, 128
 	
 	# fifth row
-	sw $s0, 0($s3)
-	sw $s0, -4($s3)
-	sw $s4, -8($s3)
-	sw $s0, -12($s3)
-	sw $s0, -16($s3)
-	sw $s0, -20($s3)
+	sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s1, -8($s5)
+	sw $s0, -12($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
 	
 	#set to next row, rightmost pixel
-	addi $s3, $s3, 128
+	addi $s5, $s5, 128
 	
 	# sixth row
-	#sw $s0, 0($t3)
-	sw $s0, -4($s3)
-	sw $s0, -8($s3)
-	sw $s0, -12($s3)
-	sw $s0, -16($s3)
-	#sw $s0, -20($s3)
+	#sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $s0, -12($s5)
+	sw $s0, -16($s5)
+	#sw $s0, -20($s5)
 	
 	#return to line after function call
 	jr $ra
