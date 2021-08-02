@@ -9,7 +9,7 @@
 
 .eqv lightBrown 0xa0522d
 .eqv darkBrown 0x654321
-.eqv displayAddress 0x10008000
+.eqv baseAddress 0x10008000
 
 .data
 initialBlock: .word 4, 13 #x, y coordinates of the top right corner of the initial block
@@ -114,7 +114,7 @@ drawEnemy:
 	addi $sp, $sp, 4 # update stack down
 	lw $t4, 0($sp) # $t4 holds colour popped off from the stack
 	addi $sp, $sp, 4 # update stack down
-	la $t1, displayAddress # $t1 has the display address
+	la $t1, baseAddress # $t1 has the base address
 	la $t2, enemyBlock # $t2 holds the top right corner of the enemy block
 	lw $t2, 4($t2) # $t2 holds the y coordinate
 	sll $t3, $t2, 5 # $t3 holds y coordinate * 32
@@ -122,7 +122,7 @@ drawEnemy:
 	lw $t2, 0($t2) # $t2 holds the x coordinate
 	add $t3, $t3, $t2 # $t3 holds 32*y + x
 	sll $t3, $t3, 2 # $t3 holds 4*(32*y + x)
-	add $t3, $t3, $t1 # $t3 holds 4*(32*y + x) + displayAddress
+	add $t3, $t3, $t1 # $t3 holds baseAddress + 4*(32*y + x) 
 	
 	lw $t8, 4($k0)
 	beqz $t8, LP1
@@ -238,8 +238,8 @@ C1:	sw $t0, -4($t3)
 	
 	
 moveEnemy1:
-	li $t0, 0xa0522d
-	li $t4, 0x654321
+	li $t0, lightBrown
+	li $t4, darkBrown
 	lw $s1, 4($k0)
 
 	# first row
@@ -314,8 +314,8 @@ moveEnemy1:
 	addi $0, $0, 0
 	
 moveEnemy2:
-	li $t0, 0xa0522d
-	li $t4, 0x654321
+	li $t0, lightBrown
+	li $t4, darkBrown
 	lw $s2, 8($k0)
 
 	# first row
@@ -390,8 +390,8 @@ moveEnemy2:
 	addi $0, $0, 0
 	
 moveEnemy3:
-	li $t0, 0xa0522d
-	li $t4, 0x654321
+	li $t0, lightBrown
+	li $t4, darkBrown
 	lw $s3, 12($k0)
 
 	# first row
