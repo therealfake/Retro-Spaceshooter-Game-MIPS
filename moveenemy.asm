@@ -9,11 +9,10 @@
 
 .eqv lightBrown 0xa0522d
 .eqv darkBrown 0x654321
-.eqv displayAddress 0x10008000
+.eqv baseAddress 0x10008000
 
 .data
-initialBlock: .word 4, 13 		#x, y coordinates of the top right corner of the initial block
-enemyBlock: .word 0, 0			#x, y coordinates of the enemy block
+obstacle: .word 0, 0			#x, y coordinates of the obstacle
 positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles
 dspwn1: .word 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
 
@@ -78,7 +77,7 @@ enemyLocation:
 	li $a1, 26		   	# Upper bound of random number generator is 30
 	syscall            		# Generate random int (returns in $a0)
 	
-	la $t0, enemyBlock 		#$t0 holds the address of the enemy's top right corner
+	la $t0, obstacle 		#$t0 holds the address of the enemy's top right corner
 	sw $a0, 4($t0) 			#save random y coordinate into enemy array
 	
 	li $v0, 42        		# Service 42, random int range
@@ -113,15 +112,15 @@ drawEnemy:
 	addi $sp, $sp, 4 		# update stack down
 	lw $t4, 0($sp) 			# $t4 holds colour popped off from the stack
 	addi $sp, $sp, 4 		# update stack down
-	la $t1, displayAddress 		# $t1 has the display address
-	la $t2, enemyBlock 		# $t2 holds the top right corner of the enemy block
+	la $t1, baseAddress 		# $t1 has the display address
+	la $t2, obstacle 		# $t2 holds the top right corner of the enemy block
 	lw $t2, 4($t2) 			# $t2 holds the y coordinate
 	sll $t3, $t2, 5 		# $t3 holds y coordinate * 32
-	la $t2, enemyBlock 		# $t2 holds the top right corner of the enemy block
+	la $t2, obstacle 		# $t2 holds the top right corner of the enemy block
 	lw $t2, 0($t2) 			# $t2 holds the x coordinate
 	add $t3, $t3, $t2 		# $t3 holds 32*y + x
 	sll $t3, $t3, 2 		# $t3 holds 4*(32*y + x)
-	add $t3, $t3, $t1 		# $t3 holds 4*(32*y + x) + displayAddress
+	add $t3, $t3, $t1 		# $t3 holds 4*(32*y + x) + baseAddress
 	
 	lw $t8, 4($k0)
 	beqz $t8, LP1
