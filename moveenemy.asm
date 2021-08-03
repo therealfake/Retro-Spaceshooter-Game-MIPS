@@ -13,8 +13,8 @@
 
 .data
 initialBlock: .word 4, 13 		#x, y coordinates of the top right corner of the initial block
-enemyBlock: .word 0, 0		#x, y coordinates of the enemy block
-positions: .word 0, 0, 0, 0, 0	#Contains the positions of all the obstacles
+enemyBlock: .word 0, 0			#x, y coordinates of the enemy block
+positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles
 dspwn1: .word 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
 
 .text
@@ -23,7 +23,7 @@ la $k0, positions			#Initialize the two arrys into registers
 la $k1, dspwn1			
 
 
-makeEnemies:			#Create three obstacles at three random locations
+makeEnemies:				#Create three obstacles at three random locations
 	jal enemyLocation
 	addi $0, $0, 0
 	jal enemyLocation
@@ -31,19 +31,19 @@ makeEnemies:			#Create three obstacles at three random locations
 	jal enemyLocation
 	addi $0, $0, 0
 	
-moveEnemies:			#Move the obstacles forward one pixel
-	jal moveEnemy1		#Draw each obstacle while updating their position in the array
+moveEnemies:				#Move the obstacles forward one pixel
+	jal moveEnemy1			#Draw each obstacle while updating their position in the array
 	addi $0, $0, 0
 	jal moveEnemy2
 	addi $0, $0, 0
 	jal moveEnemy3
 	addi $0, $0, 0
 	
-	li $v0, 32		#Sleep the simulator to slow eveerything down
+	li $v0, 32			#Sleep the simulator to slow eveerything down
 	li $a0, 100
 	syscall
 	
-	jal cleanEnemy1		#"Clear" the enemy by redrawing their position in black
+	jal cleanEnemy1			#"Clear" the enemy by redrawing their position in black
 	addi $0, $0, 0
 	jal cleanEnemy2
 	addi $0, $0, 0
@@ -51,7 +51,7 @@ moveEnemies:			#Move the obstacles forward one pixel
 	addi $0, $0, 0
 		
 	
-	lw $t8, 4($k0)		#Increment the positions of each obstacle by shifting them one pixel to the left
+	lw $t8, 4($k0)			#Increment the positions of each obstacle by shifting them one pixel to the left
 	addi $t8, $t8, -4
 	sw $t8, 4($k0)
 	
@@ -66,43 +66,42 @@ moveEnemies:			#Move the obstacles forward one pixel
 	jal checkDespawn		#Jumps to the portion of the code which checks to see if an obstacle should be removed
 	addi $0, $0, 0
 	
-	j moveEnemies		#Jump back to the top of the loop
+	j moveEnemies			#Jump back to the top of the loop
 	addi $0, $0, 0
 
-	
 enemyLocation:
-	addi $sp, $sp, -4 # move stack up
-	sw $ra, 0($sp) # save the return address
+	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 			# save the return address
 	
-	li $v0, 42         # Service 42, random int range
-	li $a0, 0          # Select random generator 0
-	li $a1, 26	   # Upper bound of random number generator is 30
-	syscall            # Generate random int (returns in $a0)
+	li $v0, 42         		# Service 42, random int range
+	li $a0, 0          		# Select random generator 0
+	li $a1, 26		   	# Upper bound of random number generator is 30
+	syscall            		# Generate random int (returns in $a0)
 	
-	la $t0, enemyBlock #$t0 holds the address of the enemy's top right corner
-	sw $a0, 4($t0) #save random y coordinate into enemy array
+	la $t0, enemyBlock 		#$t0 holds the address of the enemy's top right corner
+	sw $a0, 4($t0) 			#save random y coordinate into enemy array
 	
-	li $v0, 42         # Service 42, random int range
-	li $a0, 0          # Select random generator 0
-	li $a1, 15	   # Upper bound of random number generator is 16
-	syscall            # Generate random int (returns in $a0)
+	li $v0, 42        		# Service 42, random int range
+	li $a0, 0          		# Select random generator 0
+	li $a1, 2	 		# Upper bound of random number generator is 2
+	syscall            		# Generate random int (returns in $a0)
 	
-	addi $a0, $a0, 16 #random int *2
-	sw $a0, 0($t0) #save random x coordinate (between 16 and 32) into the enemy array
+	addi $a0, $a0, 29 		# random int between 29 and 31
+	sw $a0, 0($t0) 			#save random x coordinate (between 16 and 32) into the enemy array
 	
-	la $t0, darkBrown  # $t0 stores the dark brown colour
-	addi $sp, $sp, -4 # move up stack
-	sw $t0, 0($sp) #store the rdark brown colour into the stack
+	la $t0, darkBrown  		# $t0 stores the dark brown colour
+	addi $sp, $sp, -4 		# move up stack
+	sw $t0, 0($sp) 			#store the rdark brown colour into the stack
 	
-	la $t0, lightBrown # t0 stores the light brown colour
-	addi $sp, $sp, -4 # move up stack
-	sw $t0, 0($sp) #store the light brown colour into the stack
+	la $t0, lightBrown 		# t0 stores the light brown colour
+	addi $sp, $sp, -4 		# move up stack
+	sw $t0, 0($sp) 			#store the light brown colour into the stack
 	
 	jal drawEnemy
 	addi $0, $0, 0
 	
-	lw $ra, 0($sp) # restor this function's return adress
-	addi $sp, $sp, 4 # move the stack down
+	lw $ra, 0($sp) 			# restor this function's return adress
+	addi $sp, $sp, 4 		# move the stack down
 	
 	jr $ra
 	addi $0, $0, 0
@@ -110,19 +109,19 @@ enemyLocation:
 
 
 drawEnemy: 
-	lw $t0, 0($sp) # $t0 holds colour popped off from the stack
-	addi $sp, $sp, 4 # update stack down
-	lw $t4, 0($sp) # $t4 holds colour popped off from the stack
-	addi $sp, $sp, 4 # update stack down
-	la $t1, displayAddress # $t1 has the display address
-	la $t2, enemyBlock # $t2 holds the top right corner of the enemy block
-	lw $t2, 4($t2) # $t2 holds the y coordinate
-	sll $t3, $t2, 5 # $t3 holds y coordinate * 32
-	la $t2, enemyBlock # $t2 holds the top right corner of the enemy block
-	lw $t2, 0($t2) # $t2 holds the x coordinate
-	add $t3, $t3, $t2 # $t3 holds 32*y + x
-	sll $t3, $t3, 2 # $t3 holds 4*(32*y + x)
-	add $t3, $t3, $t1 # $t3 holds 4*(32*y + x) + displayAddress
+	lw $t0, 0($sp) 			# $t0 holds colour popped off from the stack
+	addi $sp, $sp, 4 		# update stack down
+	lw $t4, 0($sp) 			# $t4 holds colour popped off from the stack
+	addi $sp, $sp, 4 		# update stack down
+	la $t1, displayAddress 		# $t1 has the display address
+	la $t2, enemyBlock 		# $t2 holds the top right corner of the enemy block
+	lw $t2, 4($t2) 			# $t2 holds the y coordinate
+	sll $t3, $t2, 5 		# $t3 holds y coordinate * 32
+	la $t2, enemyBlock 		# $t2 holds the top right corner of the enemy block
+	lw $t2, 0($t2) 			# $t2 holds the x coordinate
+	add $t3, $t3, $t2 		# $t3 holds 32*y + x
+	sll $t3, $t3, 2 		# $t3 holds 4*(32*y + x)
+	add $t3, $t3, $t1 		# $t3 holds 4*(32*y + x) + displayAddress
 	
 	lw $t8, 4($k0)
 	beqz $t8, LP1
@@ -132,15 +131,15 @@ drawEnemy:
 	beqz $t8, LP3
 	addi $0, $0, 0
 
-LP1: 	sw $t3, 4($k0)		#Stores the position of the first obstacle in the first slot in the array, if there isn't one
+LP1: 	sw $t3, 4($k0)			#Stores the position of the first obstacle in the first slot in the array, if there isn't one
 	j C
 	addi $0, $0, 0
 
-LP2:	sw $t3, 8($k0)		#Stores the position of the second obstacle in the second slot in the array, if there isn't one
+LP2:	sw $t3, 8($k0)			#Stores the position of the second obstacle in the second slot in the array, if there isn't one
 	j C
 	addi $0, $0, 0
 
-LP3:	sw $t3, 12($k0)		#Stores the position of the third obstacle in the third slot in the array, if there isn't one
+LP3:	sw $t3, 12($k0)			#Stores the position of the third obstacle in the third slot in the array, if there isn't one
 	j C
 	addi $0, $0, 0
 	
@@ -157,21 +156,21 @@ C:	addi $t9, $t3, 0		#Calculate the number of pixels that the obstacle is from t
 	beqz $t8, LD3
 	addi $0, $0, 0
 
-LD1: 	sw $t9, 4($k1)		#Stores the despawn distance of the first obstacle in the first slot in the array, if there isn't one
+LD1: 	sw $t9, 4($k1)			#Stores the despawn distance of the first obstacle in the first slot in the array, if there isn't one
 	j C1
 	addi $0, $0, 0
 
-LD2:	sw $t9, 8($k1)		#Stores the despawn distance of the second obstacle in the second slot in the array, if there isn't one
+LD2:	sw $t9, 8($k1)			#Stores the despawn distance of the second obstacle in the second slot in the array, if there isn't one
 	j C1
 	addi $0, $0, 0
 
-LD3:	sw $t9, 12($k1)		#Stores the despawn distance of the third obstacle in the third slot in the array, if there isn't one
+LD3:	sw $t9, 12($k1)			#Stores the despawn distance of the third obstacle in the third slot in the array, if there isn't one
 	j C1
 	addi $0, $0, 0
 	
 	# first row
 	#sw $t0, 0($t3)
-C1:	sw $t0, -4($t3)		#Draws the obstacle
+C1:	sw $t0, -4($t3)			#Draws the obstacle
 	sw $t0, -8($t3)
 	sw $t0, -12($t3)
 	#sw $t0, -16($t3)
@@ -238,8 +237,8 @@ C1:	sw $t0, -4($t3)		#Draws the obstacle
 	
 	
 moveEnemy1:				#Draws the obstacle and decrease the distance from despawn
-	li $t0, 0xa0522d
-	li $t4, 0x654321
+	li $t0, lightBrown
+	li $t4, darkBrown
 	lw $s1, 4($k0)
 
 	# first row
@@ -314,8 +313,8 @@ moveEnemy1:				#Draws the obstacle and decrease the distance from despawn
 	addi $0, $0, 0
 	
 moveEnemy2:
-	li $t0, 0xa0522d
-	li $t4, 0x654321
+	li $t0, lightBrown
+	li $t4, darkBrown
 	lw $s2, 8($k0)
 
 	# first row
@@ -390,8 +389,8 @@ moveEnemy2:
 	addi $0, $0, 0
 	
 moveEnemy3:
-	li $t0, 0xa0522d
-	li $t4, 0x654321
+	li $t0, lightBrown
+	li $t4, darkBrown
 	lw $s3, 12($k0)
 
 	# first row
@@ -679,10 +678,10 @@ cleanEnemy3:
 	addi $0, $0, 0
 	
 checkDespawn:
-	sw $ra, 0($k1) 		# save the return address
+	sw $ra, 0($k1) 			# save the return address
 
 	lw $t8, 4($k1)		
-	blez $t8, RZ1		#loads and checks to see if any of the obstacles "distance until despawn" values are zero, and then jump to the spot to generate new ones
+	blez $t8, RZ1			#loads and checks to see if any of the obstacles "distance until despawn" values are zero, and then jump to the spot to generate new ones
 	addi $0, $0, 0
 	
 C2:	lw $t8, 8($k1)
@@ -693,14 +692,14 @@ C3:	lw $t8, 12($k1)
 	blez $t8, RZ3
 	addi $0, $0, 0	
 	
-C4:	lw $ra, 0($k1) 		# restore this function's return adress
-	jr $ra			#goes back to the drawnig loop
+C4:	lw $ra, 0($k1) 			# restore this function's return adress
+	jr $ra				#goes back to the drawnig loop
 	addi $0, $0, 0
 
-RZ1:	sw $0, 4($k0)		#resets the position of the obstacle back to 0
+RZ1:	sw $0, 4($k0)			#resets the position of the obstacle back to 0
 	jal enemyLocation		#generates a new obstacle and puts the 
 	addi $0, $0, 0
-	j C2			#jumps back up to check if any of the other obstacles need respawning
+	j C2				#jumps back up to check if any of the other obstacles need respawning
 	addi $0, $0, 0
 	
 RZ2:	sw $0, 8($k0)
