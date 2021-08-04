@@ -4,7 +4,7 @@
 # University of Toronto
 #
 # Student: Tianji Zhang, 1007405808, zha10311
-# Student: Longyue Wang,  
+# Student: Longyue Wang, 1007041915, wanglo18
 # Bitmap Display Configuration:
 # - Unit width in pixels: 8 (update this as needed)
 # - Unit height in pixels: 8 (update this as needed)
