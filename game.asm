@@ -52,11 +52,22 @@
 .eqv p_ASCII 0x70 			# ascii value for p in hex
 
 .data
+ship: .word 6, 12, 12, 18 #x, y coordinates of the top right corner of the ship and then the y coordinates of the left and right wing.
 obstacle: .word 0, 0			#x, y coordinates of the obstacle
 positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles
 dspwn1: .word 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
 screen: .word 31, 0			# x, y coordinates for drawing the screen black		
 .text
+createShip:
+	la $t0, grey 			# load the grey colour
+	addi, $sp, $sp, -4 		# move stack up
+	sw $t0, 0($sp) 			# store white into the stack
+	
+	la $t0, white			# load the white colour
+	addi, $sp, $sp, -4 		# move stack up
+	sw $t0, 0($sp) 			# store white into the stack
+	
+	jal drawShip
 makeEnemies:				#Create three obstacles at three random locations	
 	la $k0, positions		#Initialize the two arrys into registers
 	la $k1, dspwn1					
@@ -72,7 +83,61 @@ main:
 	lw $t8, 0($t9) 
 	beq $t8, 1, keypress_happened 	# check if they keystroke event occurred.
 	j moveEnemies
+#################################################################################################################################################
+# Ship
+#################################################################################################################################################
+drawShip:
+	lw $s0, 0($sp) 			# load the white color into $s0
+	addi $sp, $sp, 4		# move stack down
+	lw $s1, 0($sp) 			# load the white color into $s1
+	addi $sp, $sp, 4		# move stack down
+	la $s2, ship 			# $s2 load the top right corner of the ship
+	lw $s3, 0($s2)			# $s3 has the x coordinate
+	lw $s4, 4($s2)			# $s4 holds the y coordinate
+	sll $s4, $s4, 5			# $s4 holds y * 32
+	add $s4, $s4, $s3		# $s4 holds y * 32 + x
+	sll $s4, $s4, 2 		# $s4 holds 4 * (y * 32 + x)
+	add $s5, $s4, $zero
+	la $s5, baseAddress		
+	add $s5, $s5, $s4
 	
+	sw $s0, -8($s5)
+	addi $s5, $s5, 128		# move to next row
+	
+	sw $s0, -8($s5)
+	sw $s0, -12($s5)
+	addi $s5, $s5, 128		# move to next row
+	
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $s0, -12($s5)
+	sw $s0, -16($s5)
+	sw $s0, -24($s5)
+	addi $s5, $s5, 128		# move to next row
+	
+	sw $s0, 0($s5)
+	sw $s0, -4($s5)
+	sw $s1, -8($s5)
+	sw $s1, -12($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -24($s5)
+	addi $s5, $s5, 128		# move to next row
+	
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $s0, -12($s5)
+	sw $s0, -16($s5)
+	sw $s0, -24($s5)
+	addi $s5, $s5, 128		# move to next row
+	
+	sw $s0, -8($s5)
+	sw $s0, -12($s5)
+	addi $s5, $s5, 128		# move to next row
+	
+	sw $s0, -8($s5)
+	
+	jr $ra
 #################################################################################################################################################
 # Obstacles
 #################################################################################################################################################
@@ -802,7 +867,7 @@ reset:
 	li $a0, 50 			# Wait one second (1000 milliseconds)
 	syscall
 
-	j makeEnemies
+	j createShip
 	# draw screen black
 #	jal drawBlackScreen
 	# reset health
