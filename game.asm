@@ -34,28 +34,28 @@
 #
 #####################################################################
 #adresses
-.eqv baseAddress 0x10008000 # base address for the display
-.eqv keystrokeAddress 0xffff0000 # memory address for the keystroke event / if a key has been pressed
+.eqv baseAddress 0x10008000 		# base address for the display
+.eqv keystrokeAddress 0xffff0000 	# memory address for the keystroke event / if a key has been pressed
 #colors
-.eqv lightBrown 0xa0522d # asteroid color
-.eqv darkBrown 0x654321 # asteroid color
-.eqv white 0xffffff # ship colour	
-.eqv grey 0x808080 #ship colour
-.eqv red 0xff0000 # game over message colour
-.eqv green 0x00ff00 # game over screen "score" colour
+.eqv lightBrown 0xa0522d 		# asteroid color
+.eqv darkBrown 0x654321 		# asteroid color
+.eqv white 0xffffff 			# ship colour	
+.eqv grey 0x808080 			#ship colour
+.eqv red 0xff0000 			# game over message colour
+.eqv green 0x00ff00 			# game over screen "score" colour
 .eqv black 0x000000
 #ascii values for keyboard input
-.eqv w_ASCII 0x77 # ascii value for w in hex
-.eqv a_ASCII 0x61 # ascii value for a in hex
-.eqv s_ASCII 0x73 # ascii value for s in hex
-.eqv d_ASCII 0x64 # ascii value for d in hex
-.eqv p_ASCII 0x70 # ascii value for p in hex
+.eqv w_ASCII 0x77 			# ascii value for w in hex
+.eqv a_ASCII 0x61			# ascii value for a in hex
+.eqv s_ASCII 0x73 			# ascii value for s in hex
+.eqv d_ASCII 0x64 			# ascii value for d in hex
+.eqv p_ASCII 0x70 			# ascii value for p in hex
 
 .data
 obstacle: .word 0, 0			#x, y coordinates of the obstacle
 positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles
 dspwn1: .word 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
-
+screen: .word 31, 0			# x, y coordinates for drawing the screen black		
 .text
 makeEnemies:				#Create three obstacles at three random locations	
 	la $k0, positions		#Initialize the two arrys into registers
@@ -68,9 +68,9 @@ makeEnemies:				#Create three obstacles at three random locations
 	addi $0, $0, 0
 	
 main:
-	li $t9, keystrokeAddress 		# load the keystroke event address into $t9
+	li $t9, keystrokeAddress 	# load the keystroke event address into $t9
 	lw $t8, 0($t9) 
-	beq $t8, 1, keypress_happened 		# check if they keystroke event occurred.
+	beq $t8, 1, keypress_happened 	# check if they keystroke event occurred.
 	j moveEnemies
 	
 #################################################################################################################################################
@@ -779,15 +779,23 @@ keypress_happened:
 #respond_to_d:
 	# move down if not already at the bottom of the screen
 reset:
-	jal cleanEnemy1			#"Clear" the enemy by redrawing their position in black
-	addi $0, $0, 0
-	jal cleanEnemy2
-	addi $0, $0, 0
-	jal cleanEnemy3
-	addi $0, $0, 0
+	la $t0, obstacle
+	add $t1, $zero, $zero
+	sw $t1, 0($t0)
+	sw $t1, 4($t0)
+	la $t0, positions
+	add $t1, $zero, $zero
+	sw $t1, 0($t0)
+	sw $t1, 4($t0)
+	la $t0, dspwn1
+	add $t1, $zero, $zero
+	sw $t1, 0($t0)
+	sw $t1, 4($t0)
+	
+	jal drawBlackScreen
 	
 	li $v0, 32
-	li $a0, 1000 # Wait one second (1000 milliseconds)
+	li $a0, 50 			# Wait one second (1000 milliseconds)
 	syscall
 
 	j makeEnemies
@@ -795,16 +803,79 @@ reset:
 #	jal drawBlackScreen
 	# reset health
 	# reset score W
-#drawBlackScreen:
-#	addi $sp, $sp, -4 # move stack up
-#	sw $ra, 0($sp) #store return address into stack
-#	addi $t0, $zero, 0
-#	addi $t0, $zero, 32
-#	beq $t0, $t1, 
-#drawBlackRow:
-#	la $t0, black
 
+#################################################################################################################################################
+# Drawing the black screen for reset game
+#################################################################################################################################################
+drawBlackScreen:
+	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 			#store return address into stack
+	
+	la $t0, screen			# load screen coordinates
+	lw $t1, 4($t0)			# load y screen coordinate
+	addi $t2, $zero, 33		# breaking condition for the y of screen
+	beq $t1, $t2, screenDone
+	j drawBlackRow			# draw next row
+	
+	
+drawBlackRow:
+	la $s0, black 			# $s0 holds the black colour
+	la $s2, screen	 		# $s2 holds the coordinate of the top right corner of the screen
+	lw $s3, 0($s2) 			# $s3 holds the x coordinate
+	lw $s4, 4($s2) 			# $s4 holds the y coordinate
+	sll $s4, $s4, 5 		# $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 		# $s4 holds 32*y + x
+	sll $s4, $s4, 2			# $s4 holds 4*(32*y + x)
+	la $s5, baseAddress 		# $s5 has the display address
+	add $s5, $s5, $s4 		# $s5 holds baseAddress + 4*(32*y + x)
+	
+	sw $s0, 0($s5)			# colour each pixel black
+	sw $s0, -4($s5)			
+	sw $s0, -8($s5)			
+	sw $s0, -12($s5)	
+	sw $s0, -16($s5)	
+	sw $s0, -20($s5)	
+	sw $s0, -24($s5)	
+	sw $s0, -28($s5)	
+	sw $s0, -32($s5)		
+	sw $s0, -36($s5)		
+	sw $s0, -40($s5)		
+	sw $s0, -44($s5)			
+	sw $s0, -48($s5)			
+	sw $s0, -52($s5)	
+	sw $s0, -56($s5)	
+	sw $s0, -60($s5)	
+	sw $s0, -64($s5)	
+	sw $s0, -68($s5)	
+	sw $s0, -72($s5)		
+	sw $s0, -76($s5)
+	sw $s0, -80($s5)		
+	sw $s0, -84($s5)			
+	sw $s0, -88($s5)			
+	sw $s0, -92($s5)	
+	sw $s0, -96($s5)	
+	sw $s0, -100($s5)	
+	sw $s0, -104($s5)	
+	sw $s0, -108($s5)	
+	sw $s0, -112($s5)		
+	sw $s0, -116($s5)
+	sw $s0, -120($s5)		
+	sw $s0, -124($s5)
+	
+	lw $s4, 4($s2) 			# $s4 holds the y coordinate
+	addi $s4, $s4, 1		# add 1 to the y coordinate to move on to the next row.
+	sw $s4, 4($s2)			# store new y for screen
+	
+	j drawBlackScreen
 
+screenDone:
+	lw $ra, 0($sp)			#store return address
+	addi $sp, $sp, 4		# move stack down
+	la $t0, screen 			# load screen address
+	add $t1, $zero, $zero		# store reset value for y
+	sw $t1, 4($t0)			# store new y value
+	jr $ra
+	
 end:	# gracefully terminate the program
 	li $v0, 10
 	syscall
