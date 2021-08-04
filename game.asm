@@ -787,10 +787,14 @@ reset:
 	add $t1, $zero, $zero
 	sw $t1, 0($t0)
 	sw $t1, 4($t0)
+	sw $t1, 8($t0)
+	sw $t1, 12($t0)
 	la $t0, dspwn1
 	add $t1, $zero, $zero
 	sw $t1, 0($t0)
 	sw $t1, 4($t0)
+	sw $t1, 8($t0)
+	sw $t1, 12($t0)
 	
 	jal drawBlackScreen
 	
