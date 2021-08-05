@@ -68,6 +68,8 @@ createShip:
 	sw $t0, 0($sp) 			# store white into the stack
 	
 	jal drawShip
+	addi $0, $0, 0
+	
 makeEnemies:				#Create three obstacles at three random locations	
 	la $k0, positions		#Initialize the two arrys into registers
 	la $k1, dspwn1					
@@ -84,6 +86,7 @@ main:
 	lw $t8, 0($t9) 
 	beq $t8, 1, keypress_happened 	# check if they keystroke event occurred.
 	j moveEnemies
+	addi $0, $0, 0
 #################################################################################################################################################
 # Ship
 #################################################################################################################################################
@@ -139,6 +142,7 @@ drawShip:
 	sw $s0, -8($s5)
 	
 	jr $ra
+	addi $0, $0, 0
 #################################################################################################################################################
 # Obstacles
 #################################################################################################################################################
@@ -258,7 +262,7 @@ LP3:	sw $t3, 12($k0)			#Stores the position of the third obstacle in the third s
 C:	addi $t9, $t3, 0		#Calculate the number of pixels that the obstacle is from the left edge of the screen upon generation
 	andi $t9, 0x7f
 	srl $t9, $t9, 2
-	addi $t9, $t9, -5
+	addi $t9, $t9, -4
 
 	lw $t8, 4($k1)
 	beqz $t8, LD1
@@ -832,40 +836,54 @@ RZ3:	sw $0, 12($k0)
 keypress_happened:
 	lw $t2, 4($t9) 				# 4($t9) holds the ascii value of the key pressed. NOTE: this assumes $t9 is set to 0xfff0000 from before
 	beq $t2, w_ASCII, respond_to_w 		# ASCII code of 'w' is 0x77 or 119 in decimal
+	addi $0, $0, 0
 	beq $t2, a_ASCII, respond_to_a 		# ASCII code of 'a' is 0x61 or 97 in decimal
+	addi $0, $0, 0
 	beq $t2, s_ASCII, respond_to_s 		# ASCII code of 's' is 0x73 or 115 in decimal
+	addi $0, $0, 0
 	beq $t2, d_ASCII, respond_to_d 		# ASCII code of 'd' is 0x64 or 100 in decimal
+	addi $0, $0, 0
 	beq $t2, p_ASCII, reset 		# ASCII code of 'p' is 0x70 or 112 in decimal
+	addi $0, $0, 0
 	j return				# if no desired keys are pressed then
+	addi $0, $0, 0
 respond_to_w:
 	# move up if not already at the top of the screen
 	jal clearShip				# clear the current ship
+	addi $0, $0, 0
 	la $s0, ship
 	lw $s1, 8($s0)
 	add $s2, $zero, $zero			# the top edge of the screen
-	beq $s1, $s2, return			# if at the top of the screen return to game		
+	beq $s1, $s2, return			# if at the top of the screen return to game	
+	addi $0, $0, 0	
 	addi $s1, $s1, -1		
 	sw $s1, 4($s0)				#store the up move
 	sw $s1, 8($s0)
 	j return				
+	addi $0, $0, 0
 	
 respond_to_a:
 	# move to the left if not already at the edge
 	jal clearShip				# clear the current ship
+	addi $0, $0, 0
 	la $s0, ship
 	lw $s1, 0($s0)
 	addi $s2, $zero, 6			# the left edge of the screen
 	beq $s1, $s2, return			# if at the left edge of the screen return to game
+	addi $0, $0, 0
 	addi $s1, $s1, -1		
 	sw $s1, 0($s0)				#store the left move
 	j return	
+	addi $0, $0, 0
 respond_to_s:
 	# move down if not already at the edge
 	jal clearShip				# clear the current ship
+	addi $0, $0, 0
 	la $s0, ship
 	lw $s1, 12($s0)
 	addi $s2, $zero, 31			# the bottom edge of the screen
-	beq $s1, $s2, return			# if at the top of the screen return to game		
+	beq $s1, $s2, return			# if at the top of the screen return to game	
+	addi $0, $0, 0	
 	addi $s1, $s1, 1		
 	sw $s1, 12($s0)				#store the down move for the right edge
 	lw $s1, 4($s0)
@@ -873,16 +891,20 @@ respond_to_s:
 	sw $s1, 4($s0)
 	sw $s1, 8($s0)
 	j return	
+	addi $0, $0, 0
 respond_to_d:
 	# move to the right if not alredy at the edge
 	jal clearShip				# clear the current ship
+	addi $0, $0, 0
 	la $s0, ship
 	lw $s1, 0($s0)
 	addi $s2, $zero, 31			# the right edge of the screen
 	beq $s1, $s2, return			# if at the left edge of the screen return to game
+	addi $0, $0, 0
 	addi $s1, $s1, 1		
 	sw $s1, 0($s0)				#store the right move
 	j return	
+	addi $0, $0, 0
 return:						# Case where the the ship is already at an edge of the screen
 	# need to draw the ship in the new position here
 	
@@ -895,7 +917,9 @@ return:						# Case where the the ship is already at an edge of the screen
 	sw $t0, 0($sp) 			# store white into the stack
 	
 	jal drawShip
+	addi $0, $0, 0
 	j main
+	addi $0, $0, 0
 reset:
 	la $t0, obstacle
 	add $t1, $zero, $zero
@@ -915,12 +939,14 @@ reset:
 	sw $t1, 12($t0)
 	
 	jal drawBlackScreen
+	addi $0, $0, 0
 	
 	li $v0, 32
 	li $a0, 50 			# Wait one second (1000 milliseconds)
 	syscall
 
 	j createShip
+	addi $0, $0, 0
 	# draw screen black
 #	jal drawBlackScreen
 	# reset health
@@ -966,6 +992,7 @@ drawHealth:
 	sw $s0, -120($s1)
 	sw $s0, -124($s1)
 	jr $ra
+	addi $0, $0, 0
 
 #################################################################################################################################################
 # Clearing Stuff
@@ -981,6 +1008,7 @@ clearShip:
 	sw $s0, 0($sp) 			# store white into the stack
 	
 	jal drawShip
+	addi $0, $0, 0
 		
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
@@ -995,7 +1023,9 @@ drawBlackScreen:
 	lw $t1, 4($t0)			# load y screen coordinate
 	addi $t2, $zero, 33		# breaking condition for the y of screen
 	beq $t1, $t2, screenDone
+	addi $0, $0, 0
 	j drawBlackRow			# draw next row
+	addi $0, $0, 0
 	
 	
 drawBlackRow:
@@ -1047,6 +1077,7 @@ drawBlackRow:
 	sw $s4, 4($s2)			# store new y for screen
 	
 	j drawBlackScreen
+	addi $0, $0, 0
 
 screenDone:
 	lw $ra, 0($sp)			#store return address
@@ -1055,6 +1086,7 @@ screenDone:
 	add $t1, $zero, $zero		# store reset value for y
 	sw $t1, 4($t0)			# store new y value
 	jr $ra
+	addi $0, $0, 0
 	
 end:	# gracefully terminate the program
 	li $v0, 10
