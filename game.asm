@@ -838,6 +838,7 @@ keypress_happened:
 	j return				# if no desired keys are pressed then
 respond_to_w:
 	# move up if not already at the top of the screen
+	jal clearShip				# clear the current ship
 	la $s0, ship
 	lw $s1, 8($s0)
 	add $s2, $zero, $zero			# the top edge of the screen
@@ -849,6 +850,7 @@ respond_to_w:
 	
 respond_to_a:
 	# move to the left if not already at the edge
+	jal clearShip				# clear the current ship
 	la $s0, ship
 	lw $s1, 0($s0)
 	addi $s2, $zero, 6			# the left edge of the screen
@@ -858,9 +860,10 @@ respond_to_a:
 	j return	
 respond_to_s:
 	# move down if not already at the edge
+	jal clearShip				# clear the current ship
 	la $s0, ship
 	lw $s1, 12($s0)
-	addi $s2, $zero, 31			# the top edge of the screen
+	addi $s2, $zero, 31			# the bottom edge of the screen
 	beq $s1, $s2, return			# if at the top of the screen return to game		
 	addi $s1, $s1, 1		
 	sw $s1, 12($s0)				#store the down move for the right edge
@@ -871,14 +874,25 @@ respond_to_s:
 	j return	
 respond_to_d:
 	# move to the right if not alredy at the edge
+	jal clearShip				# clear the current ship
 	la $s0, ship
 	lw $s1, 0($s0)
-	addi $s2, $zero, 31			# the left edge of the screen
+	addi $s2, $zero, 31			# the right edge of the screen
 	beq $s1, $s2, return			# if at the left edge of the screen return to game
 	addi $s1, $s1, 1		
-	sw $s1, 0($s0)				#store the left move
+	sw $s1, 0($s0)				#store the right move
 	j return	
 return:						# Case where the the ship is already at an edge of the screen
+	# need to draw the ship in the new position here
+	la $t0, grey 			# load the grey colour
+	addi, $sp, $sp, -4 		# move stack up
+	sw $t0, 0($sp) 			# store white into the stack
+	
+	la $t0, white			# load the white colour
+	addi, $sp, $sp, -4 		# move stack up
+	sw $t0, 0($sp) 			# store white into the stack
+	
+	jal drawShip
 	j main
 reset:
 	la $t0, obstacle
@@ -909,7 +923,23 @@ reset:
 #	jal drawBlackScreen
 	# reset health
 	# reset score W
-
+#################################################################################################################################################
+# Clearing Stuff
+#################################################################################################################################################
+clearShip:
+	addi $sp, $sp, -4		# move stack up
+	sw $ra, 0($sp)
+	
+	la $s0, black 			# load the black colour
+	addi, $sp, $sp, -4 		# move stack up
+	sw $s0, 0($sp) 			# store white into the stack
+	addi, $sp, $sp, -4 		# move stack up
+	sw $s0, 0($sp) 			# store white into the stack
+	
+	jal drawShip
+		
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 #################################################################################################################################################
 # Drawing the black screen for reset game
 #################################################################################################################################################
