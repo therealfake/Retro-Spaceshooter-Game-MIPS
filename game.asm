@@ -829,20 +829,57 @@ RZ3:	sw $0, 12($k0)
 # Keypress
 #################################################################################################################################################
 keypress_happened:
-	lw $t2, 4($t9) 			 # 4($t9) holds the ascii value of the key pressed. NOTE: this assumes $t9 is set to 0xfff0000 from before
-	#beq $t2, w_ASCII, respond_to_w # ASCII code of 'w' is 0x77 or 119 in decimal
-	#beq $t2, a_ASCII, respond_to_a # ASCII code of 'a' is 0x61 or 97 in decimal
-	#beq $t2, s_ASCII, respond_to_s # ASCII code of 's' is 0x73 or 115 in decimal
-	#beq $t2, d_AsCII, respond_to_d # ASCII code of 'd' is 0x64 or 100 in decimal
-	beq $t2, p_ASCII, reset # ASCII code of 'p' is 0x70 or 112 in decimal
-#respond_to_w:
+	lw $t2, 4($t9) 				# 4($t9) holds the ascii value of the key pressed. NOTE: this assumes $t9 is set to 0xfff0000 from before
+	beq $t2, w_ASCII, respond_to_w 		# ASCII code of 'w' is 0x77 or 119 in decimal
+	beq $t2, a_ASCII, respond_to_a 		# ASCII code of 'a' is 0x61 or 97 in decimal
+	beq $t2, s_ASCII, respond_to_s 		# ASCII code of 's' is 0x73 or 115 in decimal
+	beq $t2, d_ASCII, respond_to_d 		# ASCII code of 'd' is 0x64 or 100 in decimal
+	beq $t2, p_ASCII, reset 		# ASCII code of 'p' is 0x70 or 112 in decimal
+	j return				# if no desired keys are pressed then
+respond_to_w:
 	# move up if not already at the top of the screen
-#respond_to_a:
-	# move to the left
-#respond_to_s:
-	# move to the right
-#respond_to_d:
-	# move down if not already at the bottom of the screen
+	la $s0, ship
+	lw $s1, 8($s0)
+	add $s2, $zero, $zero			# the top edge of the screen
+	beq $s1, $s2, return			# if at the top of the screen return to game		
+	addi $s1, $s1, -1		
+	sw $s1, 4($s0)				#store the up move
+	sw $s1, 8($s0)
+	j return				
+	
+respond_to_a:
+	# move to the left if not already at the edge
+	la $s0, ship
+	lw $s1, 0($s0)
+	addi $s2, $zero, 6			# the left edge of the screen
+	beq $s1, $s2, return			# if at the left edge of the screen return to game
+	addi $s1, $s1, -1		
+	sw $s1, 0($s0)				#store the left move
+	j return	
+respond_to_s:
+	# move down if not already at the edge
+	la $s0, ship
+	lw $s1, 12($s0)
+	addi $s2, $zero, 31			# the top edge of the screen
+	beq $s1, $s2, return			# if at the top of the screen return to game		
+	addi $s1, $s1, 1		
+	sw $s1, 12($s0)				#store the down move for the right edge
+	lw $s1, 4($s0)
+	addi $s1, $s1, 1
+	sw $s1, 4($s0)
+	sw $s1, 8($s0)
+	j return	
+respond_to_d:
+	# move to the right if not alredy at the edge
+	la $s0, ship
+	lw $s1, 0($s0)
+	addi $s2, $zero, 31			# the left edge of the screen
+	beq $s1, $s2, return			# if at the left edge of the screen return to game
+	addi $s1, $s1, 1		
+	sw $s1, 0($s0)				#store the left move
+	j return	
+return:						# Case where the the ship is already at an edge of the screen
+	j main
 reset:
 	la $t0, obstacle
 	add $t1, $zero, $zero
