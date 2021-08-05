@@ -7,6 +7,8 @@
 
 .eqv white 0xffffff 	
 .eqv grey 0x808080 
+.eqv red 0xff0000
+.eqv baseAddress 0x10008000 		# base address for the display
 
 li $t0, 0x10008594
 drawShip:
@@ -39,5 +41,12 @@ drawShip:
 	sw $t1, 368($t0)
 	sw $t1, 496($t0)
 	sw $t1, 624($t0)
-
-
+	
+	la $t0, red
+	la $t1, baseAddress
+	addi $t2, $zero, 4092
+	add $t1, $t1, $t2
+	sw $t0, 0($t1)
+end:
+	li $v0, 10
+	syscall

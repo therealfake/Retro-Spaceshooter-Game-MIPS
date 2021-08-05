@@ -77,7 +77,8 @@ makeEnemies:				#Create three obstacles at three random locations
 	addi $0, $0, 0
 	jal enemyLocation
 	addi $0, $0, 0
-	
+createHealth:
+	jal drawHealth
 main:
 	li $t9, keystrokeAddress 	# load the keystroke event address into $t9
 	lw $t8, 0($t9) 
@@ -884,6 +885,7 @@ respond_to_d:
 	j return	
 return:						# Case where the the ship is already at an edge of the screen
 	# need to draw the ship in the new position here
+	
 	la $t0, grey 			# load the grey colour
 	addi, $sp, $sp, -4 		# move stack up
 	sw $t0, 0($sp) 			# store white into the stack
@@ -923,6 +925,48 @@ reset:
 #	jal drawBlackScreen
 	# reset health
 	# reset score W
+#################################################################################################################################################
+# Health Bar
+#################################################################################################################################################
+drawHealth:	
+	la $s0, red
+	la $s1, baseAddress
+	addi $s2, $zero, 4092
+	add $s1, $s1, $s2
+	sw $s0, 0($s1)
+	sw $s0, -4($s1)
+	sw $s0, -8($s1)
+	sw $s0, -12($s1)
+	sw $s0, -16($s1)
+	sw $s0, -20($s1)
+	sw $s0, -24($s1)
+	sw $s0, -28($s1)
+	sw $s0, -32($s1)
+	sw $s0, -36($s1)
+	sw $s0, -40($s1)
+	sw $s0, -44($s1)
+	sw $s0, -48($s1)
+	sw $s0, -52($s1)
+	sw $s0, -56($s1)
+	sw $s0, -60($s1)
+	sw $s0, -64($s1)
+	sw $s0, -68($s1)
+	sw $s0, -72($s1)
+	sw $s0, -76($s1)
+	sw $s0, -80($s1)
+	sw $s0, -84($s1)
+	sw $s0, -88($s1)
+	sw $s0, -92($s1)
+	sw $s0, -96($s1)
+	sw $s0, -100($s1)
+	sw $s0, -104($s1)
+	sw $s0, -108($s1)
+	sw $s0, -112($s1)
+	sw $s0, -116($s1)
+	sw $s0, -120($s1)
+	sw $s0, -124($s1)
+	jr $ra
+
 #################################################################################################################################################
 # Clearing Stuff
 #################################################################################################################################################
