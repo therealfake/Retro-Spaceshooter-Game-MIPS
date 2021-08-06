@@ -52,11 +52,22 @@ drawShip:
 	la $s5, baseAddress		
 	add $s5, $s5, $s4
 	
-	sw $s0, -8($s5)
-	sw $s0, 252($s5)
-	sw $s0, 384($s5)
-	sw $s0, 508($s5)
-	sw $s0, 760($s5)
+	#sw $s0, -8($s5)
+	#sw $s0, 252($s5)
+	#sw $s0, 384($s5)
+	#sw $s0, 508($s5)
+	#sw $s0, 760($s5)
+	
+	addi $s5, $s5, -8
+	sw $s0, 0($s5)
+	addi $s5, $s5, 260
+	sw $s0, 0($s5)
+	addi $s5, $s5, 132
+	sw $s0, 0($s5)
+	addi $s5, $s5, 124
+	sw $s0, 0($s5)
+	addi $s5, $s5, 252
+	sw $s0, 0($s5)
 	
 	j enemyLocation
 	addi $0, $0, 0
@@ -115,65 +126,134 @@ drawEnemy:
 	sll $t3, $t3, 2 		# $t3 holds 4*(32*y + x)
 	add $t3, $t3, $t1 		# $t3 holds 4*(32*y + x) + baseAddress
 	
-	lw $t8, 4($k0)
-	beqz $t8, LP1
-	lw $t8, 8($k0)
-	beqz $t8, LP2
-	lw $t8, 12($k0)
-	beqz $t8, LP3
-	addi $0, $0, 0
-
-LP1: 	sw $t3, 4($k0)			#Stores the position of the first obstacle in the first slot in the array, if there isn't one
-	j C
-	addi $0, $0, 0
-
-LP2:	sw $t3, 8($k0)			#Stores the position of the second obstacle in the second slot in the array, if there isn't one
-	j C
-	addi $0, $0, 0
-
-LP3:	sw $t3, 12($k0)			#Stores the position of the third obstacle in the third slot in the array, if there isn't one
-	j C
-	addi $0, $0, 0
-	
-C:	addi $t9, $t3, 0		#Calculate the number of pixels that the obstacle is from the left edge of the screen upon generation
-	andi $t9, 0x7f
-	srl $t9, $t9, 2
-	addi $t9, $t9, -4
-
-	lw $t8, 4($k1)
-	beqz $t8, LD1
-	lw $t8, 8($k1)
-	beqz $t8, LD2
-	lw $t8, 12($k1)
-	beqz $t8, LD3
-	addi $0, $0, 0
-
-LD1: 	sw $t9, 4($k1)			#Stores the despawn distance of the first obstacle in the first slot in the array, if there isn't one
-	j C1
-	addi $0, $0, 0
-
-LD2:	sw $t9, 8($k1)			#Stores the despawn distance of the second obstacle in the second slot in the array, if there isn't one
-	j C1
-	addi $0, $0, 0
-
-LD3:	sw $t9, 12($k1)			#Stores the despawn distance of the third obstacle in the third slot in the array, if there isn't one
-	j C1
-	addi $0, $0, 0
-	
 	# first row
 
-C1:	sw $t0, -12($t3)			#Draws the obstacle
-	sw $t0, 112($t3)
-	sw $t0, 236($t3)
-	sw $t0, 364($t3)
-	sw $t0, 492($t3)
-	sw $t0, 624($t3)
+C1:	#sw $t0, -12($t3)			#Draws the obstacle
+	#sw $t0, 112($t3)
+	#sw $t0, 236($t3)
+	#sw $t0, 364($t3)
+	#sw $t0, 492($t3)
+	#sw $t0, 624($t3)
 	
-
+	addi $t3, $t3, -12
+	sw $t0, 0($t3)
+	addi $t3, $t3, 124
+	sw $t0, 0($t3)
+	addi $t3, $t3, 124
+	sw $t0, 0($t3)
+	addi $t3, $t3, 128
+	sw $t0, 0($t3)
+	addi $t3, $t3, 128
+	sw $t0, 0($t3)
+	addi $t3, $t3, 132
+	sw $t0, 0($t3)
+	
 	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 	
+
+######################################################################################################################
+#hitboxing
+######################################################################################################################
+
+CheckCollision:
+	la $s2, ship 			# $s2 load the top right corner of the ship
+	lw $s3, 0($s2)			# $s3 has the x coordinate
+	lw $s4, 4($s2)			# $s4 holds the y coordinate
+	sll $s4, $s4, 5			# $s4 holds y * 32
+	add $s4, $s4, $s3			# $s4 holds y * 32 + x
+	sll $s4, $s4, 2 			# $s4 holds 4 * (y * 32 + x)
+	add $s5, $s4, $zero
+	la $s5, baseAddress		
+	add $s5, $s5, $s4
+	addi $s6, $s5, 0			#move the starting coord to $s6
+	
+	jal shipchck
+	addi $0, $0, 0
+
+hitted:	jr $ra
+	addi $0, $0, 0
+
+shipchck:	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 		# save the return addres
+	
+	addi $s6, $s6, -8
+	jal checkOC
+	addi $0, $0, 0
+	addi $s6, $s6, 260
+	jal checkOC
+	addi $0, $0, 0
+	addi $s6, $s6, 132
+	jal checkOC
+	addi $0, $0, 0
+	addi $s6, $s6, 124
+	jal checkOC
+	addi $0, $0, 0
+	addi $s6, $s6, 252
+	jal checkOC
+	addi $0, $0, 0
+ 
+ 	lw $ra, 0($sp) 			# restor this function's return adress
+	addi $sp, $sp, 4 		# move the stack down
+	
+	jr $ra
+	addi $0, $0, 0
+	
+checkOC: 	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 		# save the return addres
+
+	lw $s7, 4($k1)
+	jal collide
+	addi $0, $0, 0
+	lw $s7, 8($k1)
+	jal collide
+	addi $0, $0, 0
+	lw $s7, 12($k1)
+	jal collide
+	addi $0, $0, 0
+	
+	lw $ra, 0($sp) 			# restor this function's return adress
+	addi $sp, $sp, 4 		# move the stack down
+	
+	jr $ra
+	addi $0, $0, 0
+	
+collide:	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 		# save the return addres
+	
+	addi $s7, $s7, -12			#cycles through the collideable pixels in the obstacle with the given ship pixed ($s6)
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	addi $s7, $s7, 124
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	addi $s7, $s7, 124
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	addi $s7, $s7, 128
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	addi $s7, $s7, 128
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	addi $s7, $s7, 132
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	
+	lw $ra, 0($sp) 			# restor this function's return adress
+	addi $sp, $sp, 4 		# move the stack down
+	
+	jr $ra
+	addi $0, $0, 0
+	
+hitDetected:
+	#Collision count goes up
+	#Hp is decreased
+	
+	j hitted
+	addi $0, $0, 0
+
 end:	# gracefully terminate the program
 	li $v0, 10
 	syscall
