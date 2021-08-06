@@ -918,7 +918,7 @@ return:						# Case where the the ship is already at an edge of the screen
 	
 	jal drawShip
 	addi $0, $0, 0
-	j main
+	j createHealth
 	addi $0, $0, 0
 reset:
 	la $t0, obstacle
