@@ -56,7 +56,7 @@ ship: .word 6, 12, 12, 18 #x, y coordinates of the top right corner of the ship 
 obstacle: .word 0, 0			#x, y coordinates of the obstacle
 health: .word 160			# current health of the ship
 positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles
-dspwn1: .word 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
+dspwn1: .word 0, 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
 screen: .word 31, 0			# x, y coordinates for drawing the screen black		
 .text
 createShip:
@@ -82,6 +82,7 @@ makeEnemies:				#Create three obstacles at three random locations
 	addi $0, $0, 0
 createHealth:
 	jal drawHealth
+	addi $0, $0, 0
 main:
 	li $t9, keystrokeAddress 	# load the keystroke event address into $t9
 	lw $t8, 0($t9) 
@@ -582,220 +583,220 @@ moveEnemy3:
 	addi $0, $0, 0
 	
 cleanEnemy1:				#Draw over the obstacle (clear)
-
 	lw $s1, 4($k0)
+	la $s0, black
 
 	# first row
-	#sw $k1, 0($s1)
-	sw $k1, -4($s1)
-	sw $k1, -8($s1)
-	sw $k1, -12($s1)
-	#sw $k1, -16($s1)
-	#sw $k1, -20($s1)
+	#sw $s0, 0($s1)
+	sw $s0, -4($s1)
+	sw $s0, -8($s1)
+	sw $s0, -12($s1)
+	#sw $s0, -16($s1)
+	#sw $s0, -20($s1)
 	
 	#set to next row, rightmost pixel
 	addi $s1, $s1, 128
 	
 	# second row
-	sw $k1, 0($s1)
-	sw $k1, -4($s1)
-	sw $k1, -8($s1)
-	sw $k1, -12($s1)
-	sw $k1, -16($s1)
-	#sw $k1, -20($s1)
+	sw $s0, 0($s1)
+	sw $s0, -4($s1)
+	sw $s0, -8($s1)
+	sw $s0, -12($s1)
+	sw $s0, -16($s1)
+	#sw $s0, -20($s1)
 	
 	#set to next row, rightmost pixel
 	addi $s1, $s1, 128
 	
 	# third row
-	sw $k1, 0($s1)
-	sw $k1, -4($s1)
-	sw $k1, -8($s1)
-	sw $k1, -12($s1)
-	sw $k1, -16($s1)
-	sw $k1, -20($s1)
+	sw $s0, 0($s1)
+	sw $s0, -4($s1)
+	sw $s0, -8($s1)
+	sw $s0, -12($s1)
+	sw $s0, -16($s1)
+	sw $s0, -20($s1)
 	
 	#set to next row, rightmost pixel
 	addi $s1, $s1, 128
 	
 	# fourth row
-	sw $k1, 0($s1)
-	sw $k1, -4($s1)
-	sw $k1, -8($s1)
-	sw $k1, -12($s1)
-	sw $k1, -16($s1)
-	sw $k1, -20($s1)
+	sw $s0, 0($s1)
+	sw $s0, -4($s1)
+	sw $s0, -8($s1)
+	sw $s0, -12($s1)
+	sw $s0, -16($s1)
+	sw $s0, -20($s1)
 	
 	#set to next row, rightmost pixel
 	addi $s1, $s1, 128
 	
 	# fifth row
-	sw $k1, 0($s1)
-	sw $k1, -4($s1)
-	sw $k1, -8($s1)
-	sw $k1, -12($s1)
-	sw $k1, -16($s1)
-	sw $k1, -20($s1)
+	sw $s0, 0($s1)
+	sw $s0, -4($s1)
+	sw $s0, -8($s1)
+	sw $s0, -12($s1)
+	sw $s0, -16($s1)
+	sw $s0, -20($s1)
 	
 	#set to next row, rightmost pixel
 	addi $s1, $s1, 128
 	
 	# sixth row
-	#sw $k1, 0($s1)
-	sw $k1, -4($s1)
-	sw $k1, -8($s1)
-	sw $k1, -12($s1)
-	sw $k1, -16($s1)
-	#sw $k1, -20($s1)
+	#sw $s0, 0($s1)
+	sw $s0, -4($s1)
+	sw $s0, -8($s1)
+	sw $s0, -12($s1)
+	sw $s0, -16($s1)
+	#sw $s0, -20($s1)
 	
 	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 
 cleanEnemy2:
-
 	lw $s2, 8($k0)
-
+	la $s0, black
+	
 	# first row
-	#sw $k1, 0($s2)
-	sw $k1, -4($s2)
-	sw $k1, -8($s2)
-	sw $k1, -12($s2)
-	#sw $k1, -16($s2)
-	#sw $k1, -20($s2)
+	#sw $s0, 0($s2)
+	sw $s0, -4($s2)
+	sw $s0, -8($s2)
+	sw $s0, -12($s2)
+	#sw $s0, -16($s2)
+	#sw $s0, -20($s2)
 	
 	#set to next row, rightmost pixel
 	addi $s2, $s2, 128
 	
 	# second row
-	sw $k1, 0($s2)
-	sw $k1, -4($s2)
-	sw $k1, -8($s2)
-	sw $k1, -12($s2)
-	sw $k1, -16($s2)
-	#sw $k1, -20($s2)
+	sw $s0, 0($s2)
+	sw $s0, -4($s2)
+	sw $s0, -8($s2)
+	sw $s0, -12($s2)
+	sw $s0, -16($s2)
+	#sw $s0, -20($s2)
 	
 	#set to next row, rightmost pixel
 	addi $s2, $s2, 128
 	
 	# third row
-	sw $k1, 0($s2)
-	sw $k1, -4($s2)
-	sw $k1, -8($s2)
-	sw $k1, -12($s2)
-	sw $k1, -16($s2)
-	sw $k1, -20($s2)
+	sw $s0, 0($s2)
+	sw $s0, -4($s2)
+	sw $s0, -8($s2)
+	sw $s0, -12($s2)
+	sw $s0, -16($s2)
+	sw $s0, -20($s2)
 	
 	#set to next row, rightmost pixel
 	addi $s2, $s2, 128
 	
 	# fourth row
-	sw $k1, 0($s2)
-	sw $k1, -4($s2)
-	sw $k1, -8($s2)
-	sw $k1, -12($s2)
-	sw $k1, -16($s2)
-	sw $k1, -20($s2)
+	sw $s0, 0($s2)
+	sw $s0, -4($s2)
+	sw $s0, -8($s2)
+	sw $s0, -12($s2)
+	sw $s0, -16($s2)
+	sw $s0, -20($s2)
 	
 	#set to next row, rightmost pixel
 	addi $s2, $s2, 128
 	
 	# fifth row
-	sw $k1, 0($s2)
-	sw $k1, -4($s2)
-	sw $k1, -8($s2)
-	sw $k1, -12($s2)
-	sw $k1, -16($s2)
-	sw $k1, -20($s2)
+	sw $s0, 0($s2)
+	sw $s0, -4($s2)
+	sw $s0, -8($s2)
+	sw $s0, -12($s2)
+	sw $s0, -16($s2)
+	sw $s0, -20($s2)
 	
 	#set to next row, rightmost pixel
 	addi $s2, $s2, 128
 	
 	# sixth row
-	#sw $k1, 0($s2)
-	sw $k1, -4($s2)
-	sw $k1, -8($s2)
-	sw $k1, -12($s2)
-	sw $k1, -16($s2)
-	#sw $k1, -20($s2)
+	#sw $s0, 0($s2)
+	sw $s0, -4($s2)
+	sw $s0, -8($s2)
+	sw $s0, -12($s2)
+	sw $s0, -16($s2)
+	#sw $s0, -20($s2)
 	
 	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 
 cleanEnemy3:
-
 	lw $s3, 12($k0)
+	la $s0, black
 
 	# first row
-	#sw $k1, 0($s3)
-	sw $k1, -4($s3)
-	sw $k1, -8($s3)
-	sw $k1, -12($s3)
-	#sw $k1, -16($s3)
-	#sw $k1, -20($s3)
+	#sw $s0, 0($s3)
+	sw $s0, -4($s3)
+	sw $s0, -8($s3)
+	sw $s0, -12($s3)
+	#sw $s0, -16($s3)
+	#sw $s0, -20($s3)
 	
 	#set to next row, rightmost pixel
 	addi $s3, $s3, 128
 	
 	# second row
-	sw $k1, 0($s3)
-	sw $k1, -4($s3)
-	sw $k1, -8($s3)
-	sw $k1, -12($s3)
-	sw $k1, -16($s3)
-	#sw $k1, -20($s3)
+	sw $s0, 0($s3)
+	sw $s0, -4($s3)
+	sw $s0, -8($s3)
+	sw $s0, -12($s3)
+	sw $s0, -16($s3)
+	#sw $s0, -20($s3)
 	
 	#set to next row, rightmost pixel
 	addi $s3, $s3, 128
 	
 	# third row
-	sw $k1, 0($s3)
-	sw $k1, -4($s3)
-	sw $k1, -8($s3)
-	sw $k1, -12($s3)
-	sw $k1, -16($s3)
-	sw $k1, -20($s3)
+	sw $s0, 0($s3)
+	sw $s0, -4($s3)
+	sw $s0, -8($s3)
+	sw $s0, -12($s3)
+	sw $s0, -16($s3)
+	sw $s0, -20($s3)
 	
 	#set to next row, rightmost pixel
 	addi $s3, $s3, 128
 	
 	# fourth row
-	sw $k1, 0($s3)
-	sw $k1, -4($s3)
-	sw $k1, -8($s3)
-	sw $k1, -12($s3)
-	sw $k1, -16($s3)
-	sw $k1, -20($s3)
+	sw $s0, 0($s3)
+	sw $s0, -4($s3)
+	sw $s0, -8($s3)
+	sw $s0, -12($s3)
+	sw $s0, -16($s3)
+	sw $s0, -20($s3)
 	
 	#set to next row, rightmost pixel
 	addi $s3, $s3, 128
 	
 	# fifth row
-	sw $k1, 0($s3)
-	sw $k1, -4($s3)
-	sw $k1, -8($s3)
-	sw $k1, -12($s3)
-	sw $k1, -16($s3)
-	sw $k1, -20($s3)
+	sw $s0, 0($s3)
+	sw $s0, -4($s3)
+	sw $s0, -8($s3)
+	sw $s0, -12($s3)
+	sw $s0, -16($s3)
+	sw $s0, -20($s3)
 	
 	#set to next row, rightmost pixel
 	addi $s3, $s3, 128
 	
 	# sixth row
-	#sw $k1, 0($s3)
-	sw $k1, -4($s3)
-	sw $k1, -8($s3)
-	sw $k1, -12($s3)
-	sw $k1, -16($s3)
-	#sw $k1, -20($s3)
+	#sw $s0, 0($s3)
+	sw $s0, -4($s3)
+	sw $s0, -8($s3)
+	sw $s0, -12($s3)
+	sw $s0, -16($s3)
+	#sw $s0, -20($s3)
 	
 	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 	
 checkDespawn:
-	sw $ra, 0($k1) 			# save the return address
+	sw $ra, 16($k1) 			# save the return address
 
 	lw $t8, 4($k1)		
 	blez $t8, RZ1			#loads and checks to see if any of the obstacles "distance until despawn" values are zero, and then jump to the spot to generate new ones
@@ -809,25 +810,40 @@ C3:	lw $t8, 12($k1)
 	blez $t8, RZ3
 	addi $0, $0, 0	
 	
-C4:	lw $ra, 0($k1) 			# restore this function's return adress
-	jr $ra				#goes back to the drawnig loop
+C4:	lw $ra, 16($k1) 			# restore this function's return adress
+	jr $ra				#goes back to the drawing loop
 	addi $0, $0, 0
 
 RZ1:	sw $0, 4($k0)			#resets the position of the obstacle back to 0
-	jal enemyLocation		#generates a new obstacle and puts the 
+	jal enemyLocation			#generates a new obstacle and puts the 
 	addi $0, $0, 0
+	
+	lw $t8, 0($k1)
+	addi $t8, $t8, 1
+	sw $t8, 0($k1)
+	
 	j C2				#jumps back up to check if any of the other obstacles need respawning
 	addi $0, $0, 0
 	
 RZ2:	sw $0, 8($k0)
 	jal enemyLocation
 	addi $0, $0, 0
+	
+	lw $t8, 0($k1)
+	addi $t8, $t8, 1
+	sw $t8, 0($k1)
+	
 	j C3
 	addi $0, $0, 0
 
 RZ3:	sw $0, 12($k0)
 	jal enemyLocation
 	addi $0, $0, 0
+	
+	lw $t8, 0($k1)
+	addi $t8, $t8, 1
+	sw $t8, 0($k1)
+	
 	j C4
 	addi $0, $0, 0
 
