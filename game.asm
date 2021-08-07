@@ -54,6 +54,7 @@
 .data
 ship: .word 6, 12, 12, 18 #x, y coordinates of the top right corner of the ship and then the y coordinates of the left and right wing.
 obstacle: .word 0, 0			#x, y coordinates of the obstacle
+health: .word 160			# current health of the ship
 positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles
 dspwn1: .word 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
 screen: .word 31, 0			# x, y coordinates for drawing the screen black		
@@ -852,13 +853,12 @@ respond_to_w:
 	jal clearShip				# clear the current ship
 	addi $0, $0, 0
 	la $s0, ship
-	lw $s1, 8($s0)
+	lw $s1, 4($s0)
 	add $s2, $zero, $zero			# the top edge of the screen
 	beq $s1, $s2, return			# if at the top of the screen return to game	
 	addi $0, $0, 0	
 	addi $s1, $s1, -1		
 	sw $s1, 4($s0)				#store the up move
-	sw $s1, 8($s0)
 	j return				
 	addi $0, $0, 0
 	
@@ -880,16 +880,19 @@ respond_to_s:
 	jal clearShip				# clear the current ship
 	addi $0, $0, 0
 	la $s0, ship
-	lw $s1, 12($s0)
-	addi $s2, $zero, 31			# the bottom edge of the screen
+	lw $s1, 4($s0)
+	addi $s1, $s1, 6			# get the right wing y coordinate
+	addi $s2, $zero, 30			# the bottom edge of the screen
 	beq $s1, $s2, return			# if at the top of the screen return to game	
-	addi $0, $0, 0	
-	addi $s1, $s1, 1		
-	sw $s1, 12($s0)				#store the down move for the right edge
+	addi $0, $0, 0			
+	# sw $s1, 12($s0)			#store the down move for the right edge
 	lw $s1, 4($s0)
 	addi $s1, $s1, 1
-	sw $s1, 4($s0)
-	sw $s1, 8($s0)
+	sw $s1, 4($s0)				#store the down move 
+	#lw $s1, 4($s0)
+	#addi $s1, $s1, 1
+	#sw $s1, 4($s0)
+	#sw $s1, 8($s0)
 	j return	
 	addi $0, $0, 0
 respond_to_d:
@@ -905,7 +908,7 @@ respond_to_d:
 	sw $s1, 0($s0)				#store the right move
 	j return	
 	addi $0, $0, 0
-return:						# Case where the the ship is already at an edge of the screen
+return:						
 	# need to draw the ship in the new position here
 	
 	la $t0, grey 			# load the grey colour
@@ -959,38 +962,38 @@ drawHealth:
 	la $s1, baseAddress
 	addi $s2, $zero, 4092
 	add $s1, $s1, $s2
-	sw $s0, 0($s1)
-	sw $s0, -4($s1)
-	sw $s0, -8($s1)
-	sw $s0, -12($s1)
-	sw $s0, -16($s1)
-	sw $s0, -20($s1)
-	sw $s0, -24($s1)
-	sw $s0, -28($s1)
-	sw $s0, -32($s1)
-	sw $s0, -36($s1)
-	sw $s0, -40($s1)
-	sw $s0, -44($s1)
-	sw $s0, -48($s1)
-	sw $s0, -52($s1)
-	sw $s0, -56($s1)
-	sw $s0, -60($s1)
-	sw $s0, -64($s1)
-	sw $s0, -68($s1)
-	sw $s0, -72($s1)
-	sw $s0, -76($s1)
-	sw $s0, -80($s1)
-	sw $s0, -84($s1)
-	sw $s0, -88($s1)
-	sw $s0, -92($s1)
-	sw $s0, -96($s1)
-	sw $s0, -100($s1)
-	sw $s0, -104($s1)
-	sw $s0, -108($s1)
-	sw $s0, -112($s1)
-	sw $s0, -116($s1)
-	sw $s0, -120($s1)
 	sw $s0, -124($s1)
+	sw $s0, -120($s1)
+	sw $s0, -116($s1)
+	sw $s0, -112($s1)
+	sw $s0, -108($s1)
+	sw $s0, -104($s1)
+	sw $s0, -100($s1)
+	sw $s0, -96($s1)
+	sw $s0, -92($s1)
+	sw $s0, -88($s1)
+	sw $s0, -84($s1)
+	sw $s0, -80($s1)
+	sw $s0, -76($s1)
+	sw $s0, -72($s1)
+	sw $s0, -68($s1)
+	sw $s0, -64($s1)
+	sw $s0, -60($s1)
+	sw $s0, -56($s1)
+	sw $s0, -52($s1)
+	sw $s0, -48($s1)
+	sw $s0, -44($s1)
+	sw $s0, -40($s1)
+	sw $s0, -36($s1)
+	sw $s0, -32($s1)
+	sw $s0, -28($s1)
+	sw $s0, -24($s1)
+	sw $s0, -20($s1)
+	sw $s0, -16($s1)
+	sw $s0, -12($s1)
+	sw $s0, -8($s1)
+	sw $s0, -4($s1)
+	sw $s0, 0($s1)
 	jr $ra
 	addi $0, $0, 0
 
