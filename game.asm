@@ -947,18 +947,110 @@ reset:
 	li $v0, 32
 	li $a0, 50 			# Wait one second (1000 milliseconds)
 	syscall
-
+	
+	la $t0, health
+	addi $t1, $zero, 160
+	sw $t1, 0($t0)			# reset health to 160
 	j createShip
 	addi $0, $0, 0
 	# draw screen black
 #	jal drawBlackScreen
-	# reset health
 	# reset score W
 #################################################################################################################################################
 # Health Bar
 #################################################################################################################################################
-drawHealth:	
+drawHealth:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)	
 	la $s0, red
+	la $s1, baseAddress
+	addi $s2, $zero, 4092
+	add $s1, $s1, $s2
+	la $s3, health
+	lw $s4, 0($s3)			# load current health into $s3
+	#blez $s4, drawGameOver
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 5		# if health is <= 5 return
+	sw $s0, -124($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 10		# if health is <= 10 return
+	sw $s0, -120($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 15		# if health is <= 15 return
+	sw $s0, -116($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 20		# if health is <=  20 return
+	sw $s0, -112($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 25		# if health is <=  25 return
+	sw $s0, -108($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 30		# if health is <= 30 return
+	sw $s0, -104($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 35		# if health is <= 35 return
+	sw $s0, -100($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 40		# if health is <=  40 return
+	sw $s0, -96($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 45		# if health is <= 45 return
+	sw $s0, -92($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 50		# if health is less than 50 return
+	sw $s0, -88($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 55		# if health is less than 55 return
+	sw $s0, -84($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+
+	sw $s0, -80($s1)
+	sw $s0, -76($s1)
+	sw $s0, -72($s1)
+	sw $s0, -68($s1)
+	sw $s0, -64($s1)
+	sw $s0, -60($s1)
+	sw $s0, -56($s1)
+	sw $s0, -52($s1)
+	sw $s0, -48($s1)
+	sw $s0, -44($s1)
+	sw $s0, -40($s1)
+	sw $s0, -36($s1)
+	sw $s0, -32($s1)
+	sw $s0, -28($s1)
+	sw $s0, -24($s1)
+	sw $s0, -20($s1)
+	sw $s0, -16($s1)
+	sw $s0, -12($s1)
+	sw $s0, -8($s1)
+	sw $s0, -4($s1)
+	sw $s0, 0($s1)
+	jr $ra
+	addi $0, $0, 0
+clearHealth:
+	la $s0, black
 	la $s1, baseAddress
 	addi $s2, $zero, 4092
 	add $s1, $s1, $s2
@@ -996,7 +1088,11 @@ drawHealth:
 	sw $s0, 0($s1)
 	jr $ra
 	addi $0, $0, 0
-
+jump:
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+	
 #################################################################################################################################################
 # Clearing Stuff
 #################################################################################################################################################
