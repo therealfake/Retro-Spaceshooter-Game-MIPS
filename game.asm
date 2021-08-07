@@ -52,7 +52,7 @@
 .eqv p_ASCII 0x70 			# ascii value for p in hex
 
 .data
-ship: .word 6, 12, 12, 18 #x, y coordinates of the top right corner of the ship and then the y coordinates of the left and right wing.
+ship: .word 6, 12		 	#x, y coordinates of the top right corner of the ship and then the y coordinates of the left and right wing.
 obstacle: .word 0, 0			#x, y coordinates of the obstacle
 health: .word 160			# current health of the ship
 positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles
@@ -956,6 +956,11 @@ reset:
 	sw $t1, 4($t0)
 	sw $t1, 8($t0)
 	sw $t1, 12($t0)
+	la $t0, ship
+	addi $t1, $zero, 6
+	sw $t1, 0($t0)
+	addi $t1, $zero, 12
+	sw $t1, 4($t0)
 	
 	jal drawBlackScreen
 	addi $0, $0, 0
