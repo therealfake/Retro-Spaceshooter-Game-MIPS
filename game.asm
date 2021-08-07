@@ -1046,28 +1046,112 @@ drawHealth:
 	sw $s0, -84($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
-
+	
+	addi $s5, $zero, 60		# if health is <= 35 return
 	sw $s0, -80($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 65		# if health is <=  40 return
 	sw $s0, -76($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 70		# if health is <= 45 return
 	sw $s0, -72($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 75		# if health is less than 50 return
 	sw $s0, -68($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 80		# if health is less than 55 return
 	sw $s0, -64($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 85		# if health is <= 35 return
 	sw $s0, -60($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 90		# if health is <=  40 return
 	sw $s0, -56($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 95		# if health is <= 45 return
 	sw $s0, -52($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 100		# if health is less than 50 return
 	sw $s0, -48($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 105		# if health is less than 55 return
 	sw $s0, -44($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 110		# if health is <= 35 return
 	sw $s0, -40($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 115		# if health is <=  40 return
 	sw $s0, -36($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 120		# if health is <= 45 return
 	sw $s0, -32($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 125		# if health is less than 50 return
 	sw $s0, -28($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 130		# if health is less than 55 return
 	sw $s0, -24($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 135		# if health is <= 35 return
 	sw $s0, -20($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 140		# if health is <=  40 return
 	sw $s0, -16($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 145		# if health is <= 45 return
 	sw $s0, -12($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 150		# if health is less than 50 return
 	sw $s0, -8($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 155		# if health is less than 55 return
 	sw $s0, -4($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+	
+	addi $s5, $zero, 160		# if health is less than 55 return
 	sw $s0, 0($s1)
+	ble $s4, $s5, jump
+	addi $0, $0, 0
+
 	jr $ra
 	addi $0, $0, 0
 clearHealth:
