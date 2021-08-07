@@ -248,7 +248,9 @@ collide:	addi $sp, $sp, -4 		# move stack up
 	addi $0, $0, 0
 	
 hitDetected:
-	#Collision count goes up
+	lw $t8, 0($k0)
+	addi $t8, $t8, 1
+	sw $t8, 0($k0)
 	#Hp is decreased
 	
 	j hitted
