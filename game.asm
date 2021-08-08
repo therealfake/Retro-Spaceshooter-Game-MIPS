@@ -54,7 +54,7 @@
 .data
 ship: .word 6, 12		 	#x, y coordinates of the top right corner of the ship and then the y coordinates of the left and right wing.
 obstacle: .word 0, 0			#x, y coordinates of the obstacle
-health: .word 0 #160			# current health of the ship
+health: .word 160 #160			# current health of the ship
 positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles
 dspwn1: .word 0, 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
 screen: .word 31, 0			# x, y coordinates for drawing the screen black	
@@ -93,8 +93,13 @@ main:
 	li $t9, keystrokeAddress 	# load the keystroke event address into $t9
 	lw $t8, 0($t9) 
 	beq $t8, 1, keypress_happened 	# check if they keystroke event occurred.
+	addi $0, $0, 0
 	j moveEnemies
+	addi $0, $0, 0
+	j CheckCollision
+	addi $0, $0, 0
 	j clearHealth
+	addi $0, $0, 0
 	j drawHealth
 	addi $0, $0, 0
 #################################################################################################################################################
@@ -1522,6 +1527,115 @@ allEnemies:
 	addi $sp, $sp, 4 # move the stack down
 	jr $ra
 	addi $0, $0, 0
+	
+CheckCollision:
+	la $s2, ship 			# $s2 load the top right corner of the ship
+	lw $s3, 0($s2)			# $s3 has the x coordinate
+	lw $s4, 4($s2)			# $s4 holds the y coordinate
+	sll $s4, $s4, 5			# $s4 holds y * 32
+	add $s4, $s4, $s3			# $s4 holds y * 32 + x
+	sll $s4, $s4, 2 			# $s4 holds 4 * (y * 32 + x)
+	add $s5, $s4, $zero
+	la $s5, baseAddress		
+	add $s5, $s5, $s4
+	addi $s6, $s5, 0			#move the starting coord to $s6
+	
+	jal shipchck
+	addi $0, $0, 0
+
+hitted:	j main
+	addi $0, $0, 0
+
+shipchck:	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 		# save the return addres
+	
+	addi $s6, $s6, -8
+	jal checkOC
+	addi $0, $0, 0
+	addi $s6, $s6, 260
+	jal checkOC
+	addi $0, $0, 0
+	addi $s6, $s6, 132
+	jal checkOC
+	addi $0, $0, 0
+	addi $s6, $s6, 124
+	jal checkOC
+	addi $0, $0, 0
+	addi $s6, $s6, 252
+	jal checkOC
+	addi $0, $0, 0
+ 
+ 	lw $ra, 0($sp) 			# restor this function's return adress
+	addi $sp, $sp, 4 		# move the stack down
+	
+	jr $ra
+	addi $0, $0, 0
+	
+checkOC: 	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 		# save the return addres
+
+	lw $s7, 4($k1)
+	jal collide
+	addi $0, $0, 0
+	lw $s7, 8($k1)
+	jal collide
+	addi $0, $0, 0
+	lw $s7, 12($k1)
+	jal collide
+	addi $0, $0, 0
+	
+	lw $ra, 0($sp) 			# restor this function's return adress
+	addi $sp, $sp, 4 		# move the stack down
+	
+	jr $ra
+	addi $0, $0, 0
+	
+collide:	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 		# save the return addres
+	
+	addi $s7, $s7, -12			#cycles through the collideable pixels in the obstacle with the given ship pixed ($s6)
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	addi $s7, $s7, 124
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	addi $s7, $s7, 124
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	addi $s7, $s7, 128
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	addi $s7, $s7, 128
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	addi $s7, $s7, 132
+	beq $s6, $s7, hitDetected
+	addi $0, $0, 0
+	
+	lw $ra, 0($sp) 			# restor this function's return adress
+	addi $sp, $sp, 4 		# move the stack down
+	
+	jr $ra
+	addi $0, $0, 0
+	
+hitDetected:
+	lw $t8, 0($k0)
+	addi $t8, $t8, 1
+	sw $t8, 0($k0)
+	
+	la $s0, health
+	lw $s1, 0($s0)
+	addi $s1, $s1, -10
+	sw $s1, 0($s0)
+	
+	jal clearHealth
+	addi $0, $0, 0
+	jal drawHealth
+	addi $0, $0, 0
+	
+	j hitted
+	addi $0, $0, 0
+	
 end:	# gracefully terminate the program
 	li $v0, 10
 	syscall
