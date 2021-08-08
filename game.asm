@@ -997,7 +997,7 @@ drawHealth:
 	add $s1, $s1, $s2
 	la $s3, health
 	lw $s4, 0($s3)			# load current health into $s3
-	blez $s4, drawGameOver
+	blez $s4, gameOverPhase
 	addi $0, $0, 0
 	
 	addi $s5, $zero, 5		# if health is <= 5 return
