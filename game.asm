@@ -56,6 +56,7 @@ ship: .word 6, 12		 	#x, y coordinates of the top right corner of the ship and t
 obstacle: .word 0, 0			#x, y coordinates of the obstacle
 health: .word 160 #160			# current health of the ship
 positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles, position [0] stores collisions
+misc: .word 0, 0, 0, 0, 0
 dspwn1: .word 0, 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
 screen: .word 31, 0			# x, y coordinates for drawing the screen black	
 # game over screen stuff
@@ -78,8 +79,9 @@ createShip:
 	addi $0, $0, 0
 	
 makeEnemies:				#Create three obstacles at three random locations	
-	la $k0, positions		#Initialize the two arrys into registers
+	la $k0, positions			#Initialize the two arrys into registers
 	la $k1, dspwn1					
+	la $a3, misc
 	jal enemyLocation
 	addi $0, $0, 0
 	jal enemyLocation
@@ -186,8 +188,20 @@ moveEnemies:				#Move the obstacles forward one pixel
 	addi $0, $0, 0
 	jal cleanEnemy3
 	addi $0, $0, 0
-		
 	
+	lw $t8, 0($k1)
+	li $t9, 30
+	bgt $t8, $t9, S3
+	addi $0, $0, 0
+	addi $t9, $t9, -15
+	bgt $t8, $t9, S2
+	addi $0, $0, 0
+	j S1
+	addi $0, $0, 0
+	
+S1:	li $t8, 1
+	sw $t8, 0($a3)	
+
 	lw $t8, 4($k0)			#Increment the positions of each obstacle by shifting them one pixel to the left
 	addi $t8, $t8, -4
 	sw $t8, 4($k0)
@@ -199,8 +213,48 @@ moveEnemies:				#Move the obstacles forward one pixel
 	lw $t8, 12($k0)
 	addi $t8, $t8, -4
 	sw $t8, 12($k0)
+	j contt
+	addi $0, $0, 0
 	
-	jal checkDespawn		#Jumps to the portion of the code which checks to see if an obstacle should be removed
+S2: 	li $t8, 0
+	sw $t8, 0($a3)	
+	
+	lw $t8, 4($k0)			#Increment the positions of each obstacle by shifting them two pixels to the left (speed 2)
+	addi $t8, $t8, -8
+	sw $t8, 4($k0)
+	
+	lw $t8, 8($k0)
+	addi $t8, $t8, -8
+	sw $t8, 8($k0)
+	
+	lw $t8, 12($k0)
+	addi $t8, $t8, -8
+	sw $t8, 12($k0)
+	j contt
+	addi $0, $0, 0
+	
+S3: 	li $t8, -1
+	sw $t8, 0($a3)	
+	
+	li $t8, 1
+	sw $t8, 12($a3)
+	
+	lw $t8, 4($k0)			#Increment the positions of each obstacle by shifting them three pixels to the left (speed 3)
+	addi $t8, $t8, -12
+	sw $t8, 4($k0)
+	
+	lw $t8, 8($k0)
+	addi $t8, $t8, -12
+	sw $t8, 8($k0)
+	
+	lw $t8, 12($k0)
+	addi $t8, $t8, -12
+	sw $t8, 12($k0)
+
+	j contt
+	addi $0, $0, 0
+	
+contt:	jal checkDespawn		#Jumps to the portion of the code which checks to see if an obstacle should be removed
 	addi $0, $0, 0
 	
 	lw $ra, 0($sp)
@@ -448,7 +502,8 @@ moveEnemy1:				#Draws the obstacle and decrease the distance from despawn
 	addi $t8, $t8, -1
 	sw $t8, 4($k1)
 	
-	#return to line after function call
+	
+out1:	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 	
@@ -520,11 +575,11 @@ moveEnemy2:
 	sw $t0, -16($s2)
 	#sw $t0, -20($s2)
 	
-	lw $t8, 8($k1)
+	lw $t8, 8($k1)			#Decrease the distance from despawn
 	addi $t8, $t8, -1
 	sw $t8, 8($k1)
-	
-	#return to line after function call
+
+out2:	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 	
@@ -596,11 +651,11 @@ moveEnemy3:
 	sw $t0, -16($s3)
 	#sw $t0, -20($s3)
 	
-	lw $t8, 12($k1)
-	addi $t8, $t8, -1
+	lw $t8, 12($k1)			#Decrease the distance from despawn
+sub31:	addi $t8, $t8, -1
 	sw $t8, 12($k1)
-	
-	#return to line after function call
+
+out3:	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 	
