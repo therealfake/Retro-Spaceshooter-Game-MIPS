@@ -997,7 +997,7 @@ drawHealth:
 	add $s1, $s1, $s2
 	la $s3, health
 	lw $s4, 0($s3)			# load current health into $s3
-	#blez $s4, drawGameOver
+	blez $s4, drawGameOver
 	addi $0, $0, 0
 	
 	addi $s5, $zero, 5		# if health is <= 5 return
@@ -1308,6 +1308,8 @@ screenDone:
 #################################################################################################################################################
 gameOverPhase:
 	# redraw screen to be black
+	jal drawBlackScreen
+	addi $0, $0, 0
 	# draw background obstacles
 	#jal allEnemies
 	# draw the game over message
@@ -1317,7 +1319,8 @@ gameOverPhase:
 	jal drawScore
 	addi $0, $0, 0
 	# draw reset
-	# j end
+	j end
+	addi $0, $0, 0
 drawGameOver:
 	la $s0, red # load the red colour into $s0
 	la $s1, baseAddress # $s1 has the base address
