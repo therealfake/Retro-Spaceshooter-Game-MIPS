@@ -1593,13 +1593,13 @@ checkOC:
 	addi $sp, $sp, -4 		# move stack up
 	sw $ra, 0($sp) 			# save the return addres
 
-	lw $s7, 4($k1)
+	lw $s7, 4($k0)
 	jal collide
 	addi $0, $0, 0
-	lw $s7, 8($k1)
+	lw $s7, 8($k0)
 	jal collide
 	addi $0, $0, 0
-	lw $s7, 12($k1)
+	lw $s7, 12($k0)
 	jal collide
 	addi $0, $0, 0
 	
