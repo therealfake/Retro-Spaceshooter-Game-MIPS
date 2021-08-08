@@ -89,17 +89,6 @@ makeEnemies:				#Create three obstacles at three random locations
 createHealth:
 	jal drawHealth
 	addi $0, $0, 0
-	la $s0, health
-	lw $s1, 0($s0)
-	addi $s1, $s1, -100
-	sw $s1, 0($s0)
-	li $v0, 32
-	li $a0, 1000 # Wait one second (1000 milliseconds)
-	syscall
-	jal clearHealth
-	addi $0, $0, 0
-	jal drawHealth
-	addi $0, $0, 0
 main:
 	li $t9, keystrokeAddress 	# load the keystroke event address into $t9
 	lw $t8, 0($t9) 
