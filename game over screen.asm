@@ -19,6 +19,11 @@ obstacle: .word 0, 0 #x, y coordinates of the obstacle
 game: .word 18, 3 # x,y coordinates of the top right of the word "game" 
 over: .word 28, 9 # x,y coordinates of the top right of the word "end"
 score: .word 23, 15 # x,y coordinates of the top right of the word "score"
+ok: .word 18,21 # x,y coordinates of the top right of the word "ok"
+good;
+great:
+pro:
+godly:
 .text
 gameOverPhase:
 	# redraw screen to be black
@@ -214,6 +219,14 @@ drawScore:
 	sw $s0, -64($s5)
 	sw $s0, -68($s5)
 	jr $ra
+#################################################################################################################################################
+# New Stuff
+#################################################################################################################################################
+drawOk:
+	
+#################################################################################################################################################
+# Obstacles
+#################################################################################################################################################
 allEnemies:
 	addi $sp, $sp, -4 # move the stack up
 	sw $ra, 0($sp) # store the return address
