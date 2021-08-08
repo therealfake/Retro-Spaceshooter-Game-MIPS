@@ -94,14 +94,17 @@ main:
 	lw $t8, 0($t9) 
 	beq $t8, 1, keypress_happened 	# check if they keystroke event occurred.
 	addi $0, $0, 0
-	j moveEnemies
+	jal moveEnemies
 	addi $0, $0, 0
-	j CheckCollision
+	jal CheckCollision
 	addi $0, $0, 0
-	j clearHealth
+	j main
 	addi $0, $0, 0
-	j drawHealth
-	addi $0, $0, 0
+	#jal clearHealth
+	#addi $0, $0, 0
+	#jal drawHealth
+	#addi $0, $0, 0
+	
 #################################################################################################################################################
 # Ship
 #################################################################################################################################################
@@ -163,6 +166,9 @@ drawShip:
 #################################################################################################################################################
 		
 moveEnemies:				#Move the obstacles forward one pixel
+	addi $sp, $sp, -4		# move stack up
+	sw $ra, 0($sp)
+	
 	jal moveEnemy1			#Draw each obstacle while updating their position in the array
 	addi $0, $0, 0
 	jal moveEnemy2
@@ -197,7 +203,10 @@ moveEnemies:				#Move the obstacles forward one pixel
 	jal checkDespawn		#Jumps to the portion of the code which checks to see if an obstacle should be removed
 	addi $0, $0, 0
 	
-	j main				#Jump back to the main loop
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4		# move stack down
+	#j main				#Jump back to the main loop
+	jr $ra
 	addi $0, $0, 0
 
 enemyLocation:
@@ -1531,25 +1540,32 @@ allEnemies:
 # Collision Detection
 #################################################################################################################################################
 CheckCollision:
+	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 			# save the return addres
 	la $s2, ship 			# $s2 load the top right corner of the ship
 	lw $s3, 0($s2)			# $s3 has the x coordinate
 	lw $s4, 4($s2)			# $s4 holds the y coordinate
 	sll $s4, $s4, 5			# $s4 holds y * 32
-	add $s4, $s4, $s3			# $s4 holds y * 32 + x
-	sll $s4, $s4, 2 			# $s4 holds 4 * (y * 32 + x)
+	add $s4, $s4, $s3		# $s4 holds y * 32 + x
+	sll $s4, $s4, 2 		# $s4 holds 4 * (y * 32 + x)
 	add $s5, $s4, $zero
 	la $s5, baseAddress		
 	add $s5, $s5, $s4
-	addi $s6, $s5, 0			#move the starting coord to $s6
+	addi $s6, $s5, 0		#move the starting coord to $s6
 	
 	jal shipchck
 	addi $0, $0, 0
-
-hitted:	j main
+	
+hitted:	#j main
+	lw $ra, 0($sp) 			# restor this function's return adress
+	addi $sp, $sp, 4 		# move the stack down
+	
+	jr $ra
 	addi $0, $0, 0
 
-shipchck:	addi $sp, $sp, -4 		# move stack up
-	sw $ra, 0($sp) 		# save the return addres
+shipchck:	
+	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 			# save the return addres
 	
 	addi $s6, $s6, -8
 	jal checkOC
@@ -1573,8 +1589,9 @@ shipchck:	addi $sp, $sp, -4 		# move stack up
 	jr $ra
 	addi $0, $0, 0
 	
-checkOC: 	addi $sp, $sp, -4 		# move stack up
-	sw $ra, 0($sp) 		# save the return addres
+checkOC: 	
+	addi $sp, $sp, -4 		# move stack up
+	sw $ra, 0($sp) 			# save the return addres
 
 	lw $s7, 4($k1)
 	jal collide
@@ -1592,7 +1609,8 @@ checkOC: 	addi $sp, $sp, -4 		# move stack up
 	jr $ra
 	addi $0, $0, 0
 	
-collide:	addi $sp, $sp, -4 		# move stack up
+collide:	
+	addi $sp, $sp, -4 		# move stack up
 	sw $ra, 0($sp) 		# save the return addres
 	
 	addi $s7, $s7, -12			#cycles through the collideable pixels in the obstacle with the given ship pixed ($s6)
