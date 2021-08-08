@@ -94,6 +94,8 @@ main:
 	lw $t8, 0($t9) 
 	beq $t8, 1, keypress_happened 	# check if they keystroke event occurred.
 	j moveEnemies
+	j clearHealth
+	j drawHealth
 	addi $0, $0, 0
 #################################################################################################################################################
 # Ship
