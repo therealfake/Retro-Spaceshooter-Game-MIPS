@@ -55,7 +55,7 @@
 ship: .word 6, 12		 	#x, y coordinates of the top right corner of the ship and then the y coordinates of the left and right wing.
 obstacle: .word 0, 0			#x, y coordinates of the obstacle
 health: .word 160 #160			# current health of the ship
-positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles
+positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles, position [0] stores collisions
 dspwn1: .word 0, 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
 screen: .word 31, 0			# x, y coordinates for drawing the screen black	
 # game over screen stuff
