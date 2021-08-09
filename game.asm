@@ -1421,9 +1421,12 @@ gameOverPhase:
 	ble $t0, $t1, bye
 	addi $0, $0, 0
 	jal drawSymbol_5
+	addi $0, $0, 0
 	j bye
+	addi $0, $0, 0
 bye:
 	j end
+	addi $0, $0, 0
 drawGameOver:
 	la $s0, red # load the red colour into $s0
 	la $s1, baseAddress # $s1 has the base address
