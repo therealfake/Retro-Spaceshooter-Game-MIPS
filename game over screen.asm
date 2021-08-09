@@ -30,17 +30,22 @@ gameOverPhase:
 	# draw background obstacles
 	#jal allEnemies
 	# draw the game over message
-	jal drawGameOver
+	#jal drawGameOver
 	# draw score
-	jal drawScore
+	#jal drawScore
 	#draw symbols
+	addi $s6, $zero, 16
+	
+	addi $s7, $zero, 15		
+	ble $s6, $s7, end
 	jal drawSymbol_1
+	addi $s7, $zero, 30		
+	ble $s6, $s7, end
 	jal drawSymbol_2
-	jal drawSymbol_3
-	jal drawSymbol_4
-	jal drawSymbol_5
-	# draw reset
+bye:
 	j end
+	addi $0, $0, 0
+	# draw reset
 drawGameOver:
 	la $s0, red # load the red colour into $s0
 	la $s1, baseAddress # $s1 has the base address
