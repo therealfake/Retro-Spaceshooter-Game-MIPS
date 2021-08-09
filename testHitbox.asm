@@ -57,7 +57,7 @@ drawShip:
 	#sw $s0, 384($s5)
 	#sw $s0, 508($s5)
 	#sw $s0, 760($s5)
-	
+
 	addi $s5, $s5, -8
 	sw $s0, 0($s5)
 	addi $s5, $s5, 260
@@ -67,6 +67,8 @@ drawShip:
 	addi $s5, $s5, 124
 	sw $s0, 0($s5)
 	addi $s5, $s5, 252
+	sw $s0, 0($s5)
+	addi $s5, $s5, 128
 	sw $s0, 0($s5)
 	
 	j enemyLocation
