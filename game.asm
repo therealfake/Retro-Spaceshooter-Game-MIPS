@@ -60,6 +60,9 @@ positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles, po
 misc: .word 0, 0, 0, 0, 0
 dspwn1: .word 0, 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
 screen: .word 31, 0			# x, y coordinates for drawing the screen black	
+#start screen stuff
+start: .word 25, 10 # x,y coordinates of the top right of the word "start"
+s_game: .word 23, 16 # x,y coordinates of the top right of the word "game" 
 # game over screen stuff
 ggsMessage: .word 0,0
 #obstacle: .word 0, 0 #x, y coordinates of the obstacle
@@ -72,7 +75,47 @@ symbol_3: .word 18, 23
 symbol_4: .word 24, 23
 symbol_5: .word 30, 23	
 .text
+startGamePhase:
+	jal drawStartGame
+	addi $0, $0, 0
+	jal animateShip
+	addi $0, $0, 0
+animateShip:
+	la $t0, ship
+	lw $t1, 0($t0)
+	beq $t1, 31, createShip
+	addi $0, $0, 0
+	la $t0, grey 			# load the grey colour
+	addi, $sp, $sp, -4 		# move stack up
+	sw $t0, 0($sp) 			# store white into the stack
+	
+	la $t0, white			# load the white colour
+	addi, $sp, $sp, -4 		# move stack up
+	sw $t0, 0($sp) 			# store white into the stack
+	
+	jal drawShip
+	addi $0, $0, 0
+	li $v0,32
+	li $a0,50
+	syscall
+	jal clearShip
+	addi $0, $0, 0
+	
+	la $t0, ship
+	lw $t1, 0($t0)
+	addi $t1, $t1, 1
+	sw $t1, 0($t0)
+	
+	j animateShip
+	addi $0, $0, 0
 createShip:
+	jal drawBlackScreen
+	la $t0, ship
+	addi $t1, $zero, 6
+	sw $t1, 0($t0)
+	addi $t1, $zero, 12
+	lw $t2, 0($t0)
+	
 	la $t0, grey 			# load the grey colour
 	addi, $sp, $sp, -4 		# move stack up
 	sw $t0, 0($sp) 			# store white into the stack
@@ -1055,7 +1098,7 @@ reset:
 	la $t0, health
 	addi $t1, $zero, 160
 	sw $t1, 0($t0)			# reset health to 160
-	j createShip
+	j startGamePhase
 	addi $0, $0, 0
 	# draw screen black
 #	jal drawBlackScreen
@@ -1854,6 +1897,131 @@ drawSymbol_5:
 	
 	sw $s0, -8($s5)
 	
+	jr $ra
+	addi $0, $0, 0
+#################################################################################################################################################
+# Start Game Screen
+#################################################################################################################################################
+drawStartGame:
+	la $s0, green # load the red colour into $s0
+	la $s1, baseAddress # $s1 has the base address
+	la $s2, start # $s2 holds the top right corner of the word "game"
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the base address
+	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	sw $s0, 0($s5)#first row of the word game
+	sw $s0, -4($s5)
+	sw $s0, -8($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -24($s5)
+	sw $s0, -36($s5)
+	sw $s0, -48($s5)
+	sw $s0, -52($s5)
+	sw $s0, -56($s5)
+	sw $s0, -64($s5)
+	sw $s0, -68($s5)
+	sw $s0, -72($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -4($s5)
+	sw $s0, -16($s5)
+	sw $s0, -24($s5)
+	sw $s0, -32($s5)
+	sw $s0, -40($s5)
+	sw $s0, -52($s5)
+	sw $s0, -72($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -4($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -24($s5)
+	sw $s0, -32($s5)
+	sw $s0, -36($s5)
+	sw $s0, -40($s5)
+	sw $s0, -52($s5)
+	sw $s0, -64($s5)
+	sw $s0, -68($s5)
+	sw $s0, -72($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -4($s5) #fourth row
+	sw $s0, -20($s5)
+	sw $s0, -24($s5)
+	sw $s0, -32($s5)
+	sw $s0, -40($s5)
+	sw $s0, -52($s5)
+	sw $s0, -64($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -4($s5) 
+	sw $s0, -16($s5)
+	sw $s0, -24($s5)
+	sw $s0, -32($s5)
+	sw $s0, -40($s5)
+	sw $s0, -52($s5)
+	sw $s0, -64($s5)
+	sw $s0, -68($s5)
+	sw $s0, -72($s5)
+	la $s0, green # load the red colour into $s0
+	la $s1, baseAddress # $s1 has the base address
+	la $s2, s_game # $s2 holds the top right corner of the word "game"
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the base address
+	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	sw $s0, 0($s5)#first row of the word game
+	sw $s0, -4($s5)
+	sw $s0, -16($s5)
+	sw $s0, -20($s5)
+	sw $s0, -24($s5)
+	sw $s0, -40($s5)
+	sw $s0, -52($s5)
+	sw $s0, -56($s5)
+	sw $s0, -60($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -4($s5) #second row
+	sw $s0, -12($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -60($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -0($s5) #third row
+	sw $s0, -4($s5) 
+	sw $s0, -12($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -40($s5)
+	sw $s0, -44($s5)
+	sw $s0, -52($s5)
+	sw $s0, -60($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -4($s5) #fourth row
+	sw $s0, -12($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -52($s5)
+	sw $s0, -60($s5)
+	addi $s5, $s5, 128 #set to next row, rightmost pixel
+	sw $s0, -0($s5) #fifth row
+	sw $s0, -4($s5) 
+	sw $s0, -12($s5)
+	sw $s0, -20($s5)
+	sw $s0, -28($s5)
+	sw $s0, -36($s5)
+	sw $s0, -44($s5)
+	sw $s0, -52($s5)
+	sw $s0, -56($s5)
+	sw $s0, -60($s5)
 	jr $ra
 	addi $0, $0, 0
 #################################################################################################################################################
