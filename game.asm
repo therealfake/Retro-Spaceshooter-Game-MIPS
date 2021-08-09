@@ -1623,9 +1623,13 @@ shipchck:
 	sw $ra, 0($sp) 			# save the return addres
 	
 	addi $s6, $s6, -8
+	li $t8, -1
+	sw $t8, 4($a3)
 	jal checkOC
 	addi $0, $0, 0
 	addi $s6, $s6, 260
+	li $t8, 0
+	sw $t8, 4($a3)
 	jal checkOC
 	addi $0, $0, 0
 	addi $s6, $s6, 132
@@ -1635,6 +1639,11 @@ shipchck:
 	jal checkOC
 	addi $0, $0, 0
 	addi $s6, $s6, 252
+	jal checkOC
+	addi $0, $0, 0
+	addi $s6, $s6, 128
+	li $t8, 1
+	sw $t8, 4($a3)
 	jal checkOC
 	addi $0, $0, 0
  
@@ -1694,7 +1703,15 @@ collide:
 	addi $0, $0, 0
 	
 hitDetected:
-	lw $t8, 0($k0)
+	lw $t8, 4($a3)
+	beqz $t8, hit
+	addi $0, $0, 0
+	bltz $t8, tgraze
+	addi $0, $0, 0
+	bgtz $t8, bgraze
+	addi $0, $0, 0
+
+hit:	lw $t8, 0($k0)
 	addi $t8, $t8, 1
 	sw $t8, 0($k0)
 	
@@ -1708,7 +1725,75 @@ hitDetected:
 	jal drawHealth
 	addi $0, $0, 0
 	
-	j hitted
+	j ocout
+	
+tgraze:	lw $t8, 8($a3)
+	addi $t8, $t8, 1
+	sw $t8, 8($a3)
+	
+	la $s2, ship 			# $s2 load the top right corner of the ship
+	lw $s3, 0($s2)			# $s3 has the x coordinate
+	lw $s4, 4($s2)			# $s4 holds the y coordinate
+	sll $s4, $s4, 5			# $s4 holds y * 32
+	add $s4, $s4, $s3		# $s4 holds y * 32 + x
+	sll $s4, $s4, 2 		# $s4 holds 4 * (y * 32 + x)
+	add $s5, $s4, $zero
+	la $s5, baseAddress		
+	add $s5, $s5, $s4
+	
+	la $s0, health
+	lw $s1, 0($s0)
+	addi $s1, $s1, -5
+	sw $s1, 0($s0)
+	
+	la $s0, red
+	sw $s0, -8($s5)
+	
+	li $v0, 32			#Sleep the simulator to slow eveerything down
+	li $a0, 150
+	syscall
+	
+	jal clearHealth
+	addi $0, $0, 0
+	jal drawHealth
+	addi $0, $0, 0
+	
+	j ocout
+	
+bgraze:	lw $t8, 8($a3)
+	addi $t8, $t8, 1
+	sw $t8, 8($a3)
+	
+	la $s2, ship 			# $s2 load the top right corner of the ship
+	lw $s3, 0($s2)			# $s3 has the x coordinate
+	lw $s4, 4($s2)			# $s4 holds the y coordinate
+	sll $s4, $s4, 5			# $s4 holds y * 32
+	add $s4, $s4, $s3		# $s4 holds y * 32 + x
+	sll $s4, $s4, 2 		# $s4 holds 4 * (y * 32 + x)
+	add $s5, $s4, $zero
+	la $s5, baseAddress		
+	add $s5, $s5, $s4
+	
+	la $s0, health
+	lw $s1, 0($s0)
+	addi $s1, $s1, -5
+	sw $s1, 0($s0)
+	
+	la $s0, red
+	sw $s0, 888($s5)
+	
+	li $v0, 32			#Sleep the simulator to slow eveerything down
+	li $a0, 150
+	syscall
+	
+	jal clearHealth
+	addi $0, $0, 0
+	jal drawHealth
+	addi $0, $0, 0
+	
+	j ocout
+	
+ocout:	j hitted
 	addi $0, $0, 0
 	
 end:	# gracefully terminate the program
