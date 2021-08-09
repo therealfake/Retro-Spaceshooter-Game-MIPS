@@ -85,6 +85,8 @@ startGamePhase:
 	
 	jal animateShip
 	addi $0, $0, 0
+	j createShip
+	addi $0, $0, 0
 animateShip:
 	la $t0, ship
 	lw $t1, 0($t0)
@@ -1120,7 +1122,7 @@ drawHealth:
 	add $s1, $s1, $s2
 	la $s3, health
 	lw $s4, 0($s3)			# load current health into $s3
-	blez $s4, gameOverPhase
+	blez $s4, gameOverPhase1
 	addi $0, $0, 0
 	
 	addi $s5, $zero, 5		# if health is <= 5 return
@@ -1429,14 +1431,24 @@ screenDone:
 #################################################################################################################################################
 # Game Over Screen
 #################################################################################################################################################
-gameOverPhase:
+gameOverPhase1:
 	# redraw screen to be black
 	jal drawBlackScreen
+	addi $0, $0, 0
+	la $t0, ship
+	addi $t1, $zero, 6
+	sw $t1, 0($t0)
+	addi $t1, $zero, 12
+	sw $t1, 4($t0)
+	j animateEndShip
 	addi $0, $0, 0
 	# draw background obstacles
 	#jal allEnemies
 	# maybe just draw on in each corner? or the border
 	# draw the game over message
+gameOverPhase2:
+	jal drawBlackScreen
+	addi $0, $0, 0
 	jal drawGameOver
 	addi $0, $0, 0
 	# draw score
@@ -1480,6 +1492,34 @@ gameOverPhase:
 	addi $0, $0, 0
 	
 	j bye
+	addi $0, $0, 0
+animateEndShip:
+	la $t0, ship
+	lw $t1, 0($t0)
+	beq $t1, 31, gameOverPhase2
+	addi $0, $0, 0
+	la $t0, grey 			# load the grey colour
+	addi, $sp, $sp, -4 		# move stack up
+	sw $t0, 0($sp) 			# store white into the stack
+	
+	la $t0, white			# load the white colour
+	addi, $sp, $sp, -4 		# move stack up
+	sw $t0, 0($sp) 			# store white into the stack
+	
+	jal drawShip
+	addi $0, $0, 0
+	li $v0,32
+	li $a0,50
+	syscall
+	jal clearShip
+	addi $0, $0, 0
+	
+	la $t0, ship
+	lw $t1, 0($t0)
+	addi $t1, $t1, 1
+	sw $t1, 0($t0)
+	
+	j animateEndShip
 	addi $0, $0, 0
 bye:
 	j end
