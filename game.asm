@@ -30,7 +30,7 @@
 # - yes / no / yes, and please share this project github link as well!
 #
 # Any additional information that the TA needs to know:
-# - We added added a cool start screen that we would like to be considered for extra credit
+# - We added added a cool start screen that we would like to be considered for extra credit.
 #
 #####################################################################
 #adresses
