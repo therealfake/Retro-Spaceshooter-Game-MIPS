@@ -1395,39 +1395,33 @@ gameOverPhase:
 	jal drawScore
 	addi $0, $0, 0
 	# draw reset
-	lw $s6, 0($k1) 			# obstacles despawned
-	addi $s7, $zero, 15		
-	ble $s6, $s7, bye 		# no stars	
-	addi $0, $0, 0	
+	lw $t0, 0($k1) 			# obstacles despawned
 	
+	addi $t1, $zero, 10		
+	ble $t0, $t1, bye
+	addi $0, $0, 0
 	jal drawSymbol_1
 	addi $0, $0, 0
-	addi $s7, $zero, 30		
-	ble $s6, $s7, bye 		# 1 star	
-	addi $0, $0, 0	
-	
+	addi $t1, $zero, 20		
+	ble $t0, $t1, bye
+	addi $0, $0, 0
 	jal drawSymbol_2
 	addi $0, $0, 0
-	addi $s7, $zero, 45		
-	ble $s6, $s7, bye		# 2 star	
-	addi $0, $0, 0	
-	
+	addi $t1, $zero, 30		
+	ble $t0, $t1, bye
+	addi $0, $0, 0
 	jal drawSymbol_3
 	addi $0, $0, 0
-	addi $s7, $zero, 60		
-	ble $s6, $s7, bye 		# 3 star	
-	addi $0, $0, 0	
-	
+	addi $t1, $zero, 40		
+	ble $t0, $t1, bye
+	addi $0, $0, 0
 	jal drawSymbol_4
 	addi $0, $0, 0
-	addi $s7, $zero, 75		
-	ble $s6, $s7, bye 		# 4 star	
-	addi $0, $0, 0	
-	
+	addi $t1, $zero, 50		
+	ble $t0, $t1, bye
+	addi $0, $0, 0
 	jal drawSymbol_5
-	addi $0, $0, 0
-	j end
-	addi $0, $0, 0
+	j bye
 bye:
 	j end
 drawGameOver:
