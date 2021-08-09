@@ -44,6 +44,7 @@
 .eqv red 0xff0000 			# game over message colour
 .eqv green 0x00ff00 			# game over screen "score" colour
 .eqv black 0x000000
+.eqv yellow 0xffff00 
 #ascii values for keyboard input
 .eqv w_ASCII 0x77 			# ascii value for w in hex
 .eqv a_ASCII 0x61			# ascii value for a in hex
@@ -62,9 +63,14 @@ screen: .word 31, 0			# x, y coordinates for drawing the screen black
 # game over screen stuff
 ggsMessage: .word 0,0
 #obstacle: .word 0, 0 #x, y coordinates of the obstacle
-game: .word 18, 3 # x,y coordinates of the top right of the word "game" 
-over: .word 28, 9 # x,y coordinates of the top right of the word "end"
-score: .word 23, 15 # x,y coordinates of the top right of the word "score"	
+game: .word 18, 4 # x,y coordinates of the top right of the word "game" 
+over: .word 28, 10 # x,y coordinates of the top right of the word "end"
+score: .word 23, 16 # x,y coordinates of the top right of the word "score"
+symbol_1: .word 6, 23 			# x, y coordinates for drawing score symbols
+symbol_2: .word 12, 23
+symbol_3: .word 18, 23
+symbol_4: .word 24, 23
+symbol_5: .word 30, 23	
 .text
 createShip:
 	la $t0, grey 			# load the grey colour
@@ -1389,8 +1395,36 @@ gameOverPhase:
 	jal drawScore
 	addi $0, $0, 0
 	# draw reset
+	lw $s6, 0($k1) 			# obstacles despawned
+	addi $s7, $zero, 14		
+	ble $s6, $s7, bye 		# no stars	
+	addi $0, $0, 0	
+	jal drawSymbol_1
+	addi $0, $0, 0
+	addi $s7, $zero, 34		
+	ble $s6, $s7, bye 		# 1 star	
+	addi $0, $0, 0	
+	jal drawSymbol_2
+	addi $0, $0, 0
+	addi $s7, $zero, 59		
+	ble $s6, $s7, bye		# 2 star	
+	addi $0, $0, 0	
+	jal drawSymbol_3
+	addi $0, $0, 0
+	addi $s7, $zero, 89		
+	ble $s6, $s7, bye 		# 3 star	
+	addi $0, $0, 0	
+	jal drawSymbol_4
+	addi $0, $0, 0
+	addi $s7, $zero, 124		
+	ble $s6, $s7, bye 		# 4 star	
+	addi $0, $0, 0	
+	jal drawSymbol_5
+	addi $0, $0, 0
 	j end
 	addi $0, $0, 0
+bye:
+	j end
 drawGameOver:
 	la $s0, red # load the red colour into $s0
 	la $s1, baseAddress # $s1 has the base address
@@ -1589,6 +1623,226 @@ allEnemies:
 	jal enemyLocation
 	lw $ra, 0($sp) # load the return address
 	addi $sp, $sp, 4 # move the stack down
+	jr $ra
+	addi $0, $0, 0
+drawSymbol_1:
+	la $s0, red # $s0 has the green colour
+	la $s6, yellow
+	la $s1, baseAddress # $t1 has the base address
+	la $s2, symbol_1 # $t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the base address
+	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	
+	sw $s0, -8($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -4($s5)
+	sw $s6, -8($s5)
+	sw $s0, -12($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, 0($s5)
+	sw $s6, -4($s5)
+	sw $s0, -8($s5)
+	sw $s6, -12($s5)
+	sw $s0, -16($s5)
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -4($s5)
+	sw $s6, -8($s5)
+	sw $s0, -12($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -8($s5)
+	
+	jr $ra
+	addi $0, $0, 0
+drawSymbol_2:
+	la $s0, red # $s0 has the green colour
+	la $s6, yellow
+	la $s1, baseAddress # $t1 has the base address
+	la $s2, symbol_2 # $t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the base address
+	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	
+	sw $s0, -8($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -4($s5)
+	sw $s6, -8($s5)
+	sw $s0, -12($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, 0($s5)
+	sw $s6, -4($s5)
+	sw $s0, -8($s5)
+	sw $s6, -12($s5)
+	sw $s0, -16($s5)
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -4($s5)
+	sw $s6, -8($s5)
+	sw $s0, -12($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -8($s5)
+	
+	jr $ra
+	addi $0, $0, 0
+drawSymbol_3:
+	la $s0, red # $s0 has the green colour
+	la $s6, yellow
+	la $s1, baseAddress # $t1 has the base address
+	la $s2, symbol_3 # $t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the base address
+	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	
+	sw $s0, -8($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -4($s5)
+	sw $s6, -8($s5)
+	sw $s0, -12($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, 0($s5)
+	sw $s6, -4($s5)
+	sw $s0, -8($s5)
+	sw $s6, -12($s5)
+	sw $s0, -16($s5)
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -4($s5)
+	sw $s6, -8($s5)
+	sw $s0, -12($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -8($s5)
+	
+	jr $ra
+	addi $0, $0, 0
+drawSymbol_4:
+	la $s0, red # $s0 has the green colour
+	la $s6, yellow
+	la $s1, baseAddress # $t1 has the base address
+	la $s2, symbol_4 # $t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the base address
+	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	
+	sw $s0, -8($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -4($s5)
+	sw $s6, -8($s5)
+	sw $s0, -12($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, 0($s5)
+	sw $s6, -4($s5)
+	sw $s0, -8($s5)
+	sw $s6, -12($s5)
+	sw $s0, -16($s5)
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -4($s5)
+	sw $s6, -8($s5)
+	sw $s0, -12($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -8($s5)
+	
+	jr $ra
+	addi $0, $0, 0
+drawSymbol_5:
+	la $s0, red # $s0 has the green colour
+	la $s6, yellow
+	la $s1, baseAddress # $t1 has the base address
+	la $s2, symbol_5 # $t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) # $s3 holds the x coordinate
+	lw $s4, 4($s2) # $s4 holds the y coordinate
+	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 # $s4 holds 32*y + x
+	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
+	la $s5, baseAddress # $s5 has the base address
+	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	
+	sw $s0, -8($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -4($s5)
+	sw $s6, -8($s5)
+	sw $s0, -12($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, 0($s5)
+	sw $s6, -4($s5)
+	sw $s0, -8($s5)
+	sw $s6, -12($s5)
+	sw $s0, -16($s5)
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -4($s5)
+	sw $s6, -8($s5)
+	sw $s0, -12($s5)
+	
+	#set to next row, rightmost pixel
+	addi $s5, $s5, 128
+	
+	sw $s0, -8($s5)
+	
 	jr $ra
 	addi $0, $0, 0
 #################################################################################################################################################
