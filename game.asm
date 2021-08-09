@@ -1402,26 +1402,35 @@ gameOverPhase:
 	addi $0, $0, 0
 	jal drawSymbol_1
 	addi $0, $0, 0
-	addi $t1, $zero, 20		
+	
+	addi $t1, $zero, 20	
+	lw $t0, 0($k1)
 	ble $t0, $t1, bye
 	addi $0, $0, 0
 	jal drawSymbol_2
 	addi $0, $0, 0
-	addi $t1, $zero, 30		
+	
+	addi $t1, $zero, 30
+	lw $t0, 0($k1)		
 	ble $t0, $t1, bye
 	addi $0, $0, 0
 	jal drawSymbol_3
 	addi $0, $0, 0
-	addi $t1, $zero, 40		
+	
+	addi $t1, $zero, 40
+	lw $t0, 0($k1)		
 	ble $t0, $t1, bye
 	addi $0, $0, 0
 	jal drawSymbol_4
 	addi $0, $0, 0
-	addi $t1, $zero, 50		
+	
+	addi $t1, $zero, 50	
+	lw $t0, 0($k1)	
 	ble $t0, $t1, bye
 	addi $0, $0, 0
 	jal drawSymbol_5
 	addi $0, $0, 0
+	
 	j bye
 	addi $0, $0, 0
 bye:
