@@ -78,6 +78,11 @@ symbol_5: .word 30, 23
 startGamePhase:
 	jal drawStartGame
 	addi $0, $0, 0
+	
+	li $v0,32
+	li $a0,1000
+	syscall
+	
 	jal animateShip
 	addi $0, $0, 0
 animateShip:
