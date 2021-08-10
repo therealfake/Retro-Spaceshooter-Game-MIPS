@@ -42,7 +42,7 @@
 .eqv white 0xffffff 			# ship colour	
 .eqv grey 0x808080 			#ship colour
 .eqv red 0xff0000 			# game over message colour
-.eqv green 0x00ff00 			# game over screen "score" colour
+.eqv green 0x00ff00 		# game over screen "score" colour
 .eqv black 0x000000
 .eqv yellow 0xffff00 
 #ascii values for keyboard input
@@ -54,22 +54,22 @@
 
 .data
 ship: .word 6, 12		 	#x, y coordinates of the top right corner of the ship and then the y coordinates of the left and right wing.
-obstacle: .word 0, 0			#x, y coordinates of the obstacle
-health: .word 160 #160			# current health of the ship
-positions: .word 0, 0, 0, 0, 0		#Contains the positions of all the obstacles, position [0] stores collisions
-misc: .word 0, 0, 0, 0, 0
+obstacle: .word 0, 0		#x, y coordinates of the obstacle
+health: .word 160 #160		# current health of the ship
+positions: .word 0, 0, 0, 0, 0	#Contains the positions of all the obstacles, position [0] stores collisions
+misc: .word 0, 0, 0, 0, 0		#contains various values that required storage, temporary or otherwise	
 dspwn1: .word 0, 0, 0, 0, 0		#Contains the distance from the point at which the obstacle needs to vanish and be generated again elsewhere
 screen: .word 31, 0			# x, y coordinates for drawing the screen black	
 #start screen stuff
-start: .word 25, 10 # x,y coordinates of the top right of the word "start"
-s_game: .word 23, 16 # x,y coordinates of the top right of the word "game" 
+start: .word 25, 10 		# x,y coordinates of the top right of the word "start"
+s_game: .word 23, 16 		# x,y coordinates of the top right of the word "game" 
 # game over screen stuff
 ggsMessage: .word 0,0
-#obstacle: .word 0, 0 #x, y coordinates of the obstacle
-game: .word 18, 4 # x,y coordinates of the top right of the word "game" 
-over: .word 28, 10 # x,y coordinates of the top right of the word "end"
-score: .word 23, 16 # x,y coordinates of the top right of the word "score"
-symbol_1: .word 6, 23 			# x, y coordinates for drawing score symbols
+#obstacle: .word 0, 0 		#x, y coordinates of the obstacle
+game: .word 18, 4 			# x,y coordinates of the top right of the word "game" 
+over: .word 28, 10 			# x,y coordinates of the top right of the word "end"
+score: .word 23, 16 		# x,y coordinates of the top right of the word "score"
+symbol_1: .word 6, 23 		# x, y coordinates for drawing score symbols
 symbol_2: .word 12, 23
 symbol_3: .word 18, 23
 symbol_4: .word 24, 23
@@ -87,17 +87,18 @@ startGamePhase:
 	addi $0, $0, 0
 	j createShip
 	addi $0, $0, 0
+	
 animateShip:
 	la $t0, ship
 	lw $t1, 0($t0)
 	beq $t1, 31, createShip
 	addi $0, $0, 0
 	la $t0, grey 			# load the grey colour
-	addi, $sp, $sp, -4 		# move stack up
+	addi, $sp, $sp, -4 			# move stack up
 	sw $t0, 0($sp) 			# store white into the stack
 	
 	la $t0, white			# load the white colour
-	addi, $sp, $sp, -4 		# move stack up
+	addi, $sp, $sp, -4 			# move stack up
 	sw $t0, 0($sp) 			# store white into the stack
 	
 	jal drawShip
@@ -115,6 +116,7 @@ animateShip:
 	
 	j animateShip
 	addi $0, $0, 0
+	
 createShip:
 	jal drawBlackScreen
 	la $t0, ship
@@ -124,11 +126,11 @@ createShip:
 	lw $t2, 0($t0)
 	
 	la $t0, grey 			# load the grey colour
-	addi, $sp, $sp, -4 		# move stack up
+	addi, $sp, $sp, -4 			# move stack up
 	sw $t0, 0($sp) 			# store white into the stack
 	
 	la $t0, white			# load the white colour
-	addi, $sp, $sp, -4 		# move stack up
+	addi, $sp, $sp, -4 			# move stack up
 	sw $t0, 0($sp) 			# store white into the stack
 	
 	jal drawShip
@@ -148,7 +150,7 @@ createHealth:
 	jal drawHealth
 	addi $0, $0, 0
 main:
-	li $t9, keystrokeAddress 	# load the keystroke event address into $t9
+	li $t9, keystrokeAddress 		# load the keystroke event address into $t9
 	lw $t8, 0($t9) 
 	beq $t8, 1, keypress_happened 	# check if they keystroke event occurred.
 	addi $0, $0, 0
@@ -158,42 +160,38 @@ main:
 	addi $0, $0, 0
 	j main
 	addi $0, $0, 0
-	#jal clearHealth
-	#addi $0, $0, 0
-	#jal drawHealth
-	#addi $0, $0, 0
 	
 #################################################################################################################################################
 # Ship
 #################################################################################################################################################
 drawShip:
 	lw $s0, 0($sp) 			# load the white color into $s0
-	addi $sp, $sp, 4		# move stack down
+	addi $sp, $sp, 4			# move stack down
 	lw $s1, 0($sp) 			# load the white color into $s1
-	addi $sp, $sp, 4		# move stack down
+	addi $sp, $sp, 4			# move stack down
 	la $s2, ship 			# $s2 load the top right corner of the ship
 	lw $s3, 0($s2)			# $s3 has the x coordinate
 	lw $s4, 4($s2)			# $s4 holds the y coordinate
 	sll $s4, $s4, 5			# $s4 holds y * 32
-	add $s4, $s4, $s3		# $s4 holds y * 32 + x
-	sll $s4, $s4, 2 		# $s4 holds 4 * (y * 32 + x)
+	add $s4, $s4, $s3			# $s4 holds y * 32 + x
+	sll $s4, $s4, 2 			# $s4 holds 4 * (y * 32 + x)
 	add $s5, $s4, $zero
 	la $s5, baseAddress		
 	add $s5, $s5, $s4
 	
 	sw $s0, -8($s5)
-	addi $s5, $s5, 128		# move to next row
+	addi $s5, $s5, 128			# move to next row
 	
 	sw $s0, -8($s5)
 	sw $s0, -12($s5)
-	addi $s5, $s5, 128		# move to next row
+	addi $s5, $s5, 128			# move to next row
 	
 	sw $s0, -4($s5)
 	sw $s0, -8($s5)
 	sw $s0, -12($s5)
 	sw $s0, -16($s5)
 	sw $s0, -24($s5)
-	addi $s5, $s5, 128		# move to next row
+	addi $s5, $s5, 128			# move to next row
 	
 	sw $s0, 0($s5)
 	sw $s0, -4($s5)
@@ -201,19 +199,19 @@ drawShip:
 	sw $s1, -12($s5)
 	sw $s0, -16($s5)
 	sw $s0, -20($s5)
-	sw $s0, -24($s5)
-	addi $s5, $s5, 128		# move to next row
+	sw $s0, -24($s5)	
+	addi $s5, $s5, 128			# move to next row
 	
 	sw $s0, -4($s5)
 	sw $s0, -8($s5)
 	sw $s0, -12($s5)
 	sw $s0, -16($s5)
 	sw $s0, -24($s5)
-	addi $s5, $s5, 128		# move to next row
+	addi $s5, $s5, 128			# move to next row
 	
 	sw $s0, -8($s5)
 	sw $s0, -12($s5)
-	addi $s5, $s5, 128		# move to next row
+	addi $s5, $s5, 128			# move to next row
 	
 	sw $s0, -8($s5)
 	
@@ -224,7 +222,7 @@ drawShip:
 #################################################################################################################################################
 		
 moveEnemies:				#Move the obstacles forward one pixel
-	addi $sp, $sp, -4		# move stack up
+	addi $sp, $sp, -4			# move stack up
 	sw $ra, 0($sp)
 	
 	jal moveEnemy1			#Draw each obstacle while updating their position in the array
@@ -310,48 +308,48 @@ S3: 	li $t8, -1
 	j contt
 	addi $0, $0, 0
 	
-contt:	jal checkDespawn		#Jumps to the portion of the code which checks to see if an obstacle should be removed
+contt:	jal checkDespawn			#Jumps to the portion of the code which checks to see if an obstacle should be removed
 	addi $0, $0, 0
 	
 	lw $ra, 0($sp)
-	addi $sp, $sp, 4		# move stack down
+	addi $sp, $sp, 4			# move stack down
 	#j main				#Jump back to the main loop
 	jr $ra
 	addi $0, $0, 0
 
 enemyLocation:
-	addi $sp, $sp, -4 		# move stack up
+	addi $sp, $sp, -4 			# move stack up
 	sw $ra, 0($sp) 			# save the return address
 	
-	li $v0, 42         		# Service 42, random int range
-	li $a0, 0          		# Select random generator 0
+	li $v0, 42         			# Service 42, random int range
+	li $a0, 0          			# Select random generator 0
 	li $a1, 26		   	# Upper bound of random number generator is 30
-	syscall            		# Generate random int (returns in $a0)
+	syscall            			# Generate random int (returns in $a0)
 	
-	la $t0, obstacle 		#$t0 holds the address of the enemy's top right corner
+	la $t0, obstacle 			#$t0 holds the address of the enemy's top right corner
 	sw $a0, 4($t0) 			#save random y coordinate into enemy array
 	
-	li $v0, 42        		# Service 42, random int range
-	li $a0, 0          		# Select random generator 0
-	li $a1, 2	 		# Upper bound of random number generator is 2
-	syscall            		# Generate random int (returns in $a0)
+	li $v0, 42        			# Service 42, random int range
+	li $a0, 0          			# Select random generator 0
+	li $a1, 2	 			# Upper bound of random number generator is 2
+	syscall            			# Generate random int (returns in $a0)
 	
-	addi $a0, $a0, 29 		# random int between 29 and 31
+	addi $a0, $a0, 29 			# random int between 29 and 31
 	sw $a0, 0($t0) 			#save random x coordinate (between 16 and 32) into the enemy array
 	
-	la $t0, darkBrown  		# $t0 stores the dark brown colour
-	addi $sp, $sp, -4 		# move up stack
+	la $t0, darkBrown  			# $t0 stores the dark brown colour
+	addi $sp, $sp, -4 			# move up stack
 	sw $t0, 0($sp) 			#store the rdark brown colour into the stack
 	
-	la $t0, lightBrown 		# t0 stores the light brown colour
-	addi $sp, $sp, -4 		# move up stack
+	la $t0, lightBrown 			# t0 stores the light brown colour
+	addi $sp, $sp, -4 			# move up stack
 	sw $t0, 0($sp) 			#store the light brown colour into the stack
 	
 	jal drawEnemy
 	addi $0, $0, 0
 	
 	lw $ra, 0($sp) 			# restor this function's return adress
-	addi $sp, $sp, 4 		# move the stack down
+	addi $sp, $sp, 4 			# move the stack down
 	
 	jr $ra
 	addi $0, $0, 0
@@ -360,18 +358,18 @@ enemyLocation:
 
 drawEnemy: 
 	lw $t0, 0($sp) 			# $t0 holds colour popped off from the stack
-	addi $sp, $sp, 4 		# update stack down
+	addi $sp, $sp, 4 			# update stack down
 	lw $t4, 0($sp) 			# $t4 holds colour popped off from the stack
-	addi $sp, $sp, 4 		# update stack down
+	addi $sp, $sp, 4 			# update stack down
 	la $t1, baseAddress 		# $t1 has the display address
-	la $t2, obstacle 		# $t2 holds the top right corner of the enemy block
+	la $t2, obstacle 			# $t2 holds the top right corner of the enemy block
 	lw $t2, 4($t2) 			# $t2 holds the y coordinate
-	sll $t3, $t2, 5 		# $t3 holds y coordinate * 32
-	la $t2, obstacle 		# $t2 holds the top right corner of the enemy block
+	sll $t3, $t2, 5 			# $t3 holds y coordinate * 32
+	la $t2, obstacle 			# $t2 holds the top right corner of the enemy block
 	lw $t2, 0($t2) 			# $t2 holds the x coordinate
-	add $t3, $t3, $t2 		# $t3 holds 32*y + x
-	sll $t3, $t3, 2 		# $t3 holds 4*(32*y + x)
-	add $t3, $t3, $t1 		# $t3 holds 4*(32*y + x) + baseAddress
+	add $t3, $t3, $t2 			# $t3 holds 32*y + x
+	sll $t3, $t3, 2 			# $t3 holds 4*(32*y + x)
+	add $t3, $t3, $t1 			# $t3 holds 4*(32*y + x) + baseAddress
 	
 	lw $t8, 4($k0)
 	beqz $t8, LP1
@@ -393,7 +391,7 @@ LP3:	sw $t3, 12($k0)			#Stores the position of the third obstacle in the third s
 	j C
 	addi $0, $0, 0
 	
-C:	addi $t9, $t3, 0		#Calculate the number of pixels that the obstacle is from the left edge of the screen upon generation
+C:	addi $t9, $t3, 0			#Calculate the number of pixels that the obstacle is from the left edge of the screen upon generation
 	andi $t9, 0x7f
 	srl $t9, $t9, 2
 	addi $t9, $t9, -4
@@ -419,12 +417,9 @@ LD3:	sw $t9, 12($k1)			#Stores the despawn distance of the third obstacle in the
 	addi $0, $0, 0
 	
 	# first row
-	#sw $t0, 0($t3)
 C1:	sw $t0, -4($t3)			#Draws the obstacle
 	sw $t0, -8($t3)
 	sw $t0, -12($t3)
-	#sw $t0, -16($t3)
-	#sw $t0, -20($t3)
 	
 	#set to next row, rightmost pixel
 	addi $t3, $t3, 128
@@ -435,7 +430,7 @@ C1:	sw $t0, -4($t3)			#Draws the obstacle
 	sw $t4, -8($t3)
 	sw $t4, -12($t3)
 	sw $t0, -16($t3)
-	#sw $t0, -20($t3)
+
 	
 	#set to next row, rightmost pixel
 	addi $t3, $t3, 128
@@ -474,12 +469,11 @@ C1:	sw $t0, -4($t3)			#Draws the obstacle
 	addi $t3, $t3, 128
 	
 	# sixth row
-	#sw $t0, 0($t3)
 	sw $t0, -4($t3)
 	sw $t0, -8($t3)
 	sw $t0, -12($t3)
 	sw $t0, -16($t3)
-	#sw $t0, -20($t3)
+
 	
 	#return to line after function call
 	jr $ra
@@ -492,12 +486,9 @@ moveEnemy1:				#Draws the obstacle and decrease the distance from despawn
 	lw $s1, 4($k0)
 
 	# first row
-	#sw $t0, 0($s1)
 	sw $t0, -4($s1)
 	sw $t0, -8($s1)
 	sw $t0, -12($s1)
-	#sw $t0, -16($s1)
-	#sw $t0, -20($s1)
 	
 	#set to next row, rightmost pixel
 	addi $s1, $s1, 128
@@ -508,7 +499,6 @@ moveEnemy1:				#Draws the obstacle and decrease the distance from despawn
 	sw $t4, -8($s1)
 	sw $t4, -12($s1)
 	sw $t0, -16($s1)
-	#sw $t0, -20($s1)
 	
 	#set to next row, rightmost pixel
 	addi $s1, $s1, 128
@@ -552,7 +542,6 @@ moveEnemy1:				#Draws the obstacle and decrease the distance from despawn
 	sw $t0, -8($s1)
 	sw $t0, -12($s1)
 	sw $t0, -16($s1)
-	#sw $t0, -20($s1)
 	
 	lw $t8, 4($k1)			#Decrease the distance from despawn
 	addi $t8, $t8, -1
@@ -563,18 +552,15 @@ out1:	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 	
-moveEnemy2:
+moveEnemy2:				#Draws the obstacle and decrease the distance from despawn
 	li $t0, lightBrown
 	li $t4, darkBrown
 	lw $s2, 8($k0)
 
 	# first row
-	#sw $t0, 0($s2)
 	sw $t0, -4($s2)
 	sw $t0, -8($s2)
 	sw $t0, -12($s2)
-	#sw $t0, -16($s2)
-	#sw $t0, -20($s2)
 	
 	#set to next row, rightmost pixel
 	addi $s2, $s2, 128
@@ -585,7 +571,6 @@ moveEnemy2:
 	sw $t4, -8($s2)
 	sw $t4, -12($s2)
 	sw $t0, -16($s2)
-	#sw $t0, -20($s2)
 	
 	#set to next row, rightmost pixel
 	addi $s2, $s2, 128
@@ -624,12 +609,10 @@ moveEnemy2:
 	addi $s2, $s2, 128
 	
 	# sixth row
-	#sw $t0, 0($s2)
 	sw $t0, -4($s2)
 	sw $t0, -8($s2)
 	sw $t0, -12($s2)
 	sw $t0, -16($s2)
-	#sw $t0, -20($s2)
 	
 	lw $t8, 8($k1)			#Decrease the distance from despawn
 	addi $t8, $t8, -1
@@ -639,7 +622,7 @@ out2:	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 	
-moveEnemy3:
+moveEnemy3:				#Draws the obstacle and decrease the distance from despawn
 	li $t0, lightBrown
 	li $t4, darkBrown
 	lw $s3, 12($k0)
@@ -700,12 +683,11 @@ moveEnemy3:
 	addi $s3, $s3, 128
 	
 	# sixth row
-	#sw $t0, 0($s3)
 	sw $t0, -4($s3)
 	sw $t0, -8($s3)
 	sw $t0, -12($s3)
 	sw $t0, -16($s3)
-	#sw $t0, -20($s3)
+
 	
 	lw $t8, 12($k1)			#Decrease the distance from despawn
 sub31:	addi $t8, $t8, -1
@@ -715,18 +697,15 @@ out3:	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 	
-cleanEnemy1:				#Draw over the obstacle (clear)
+cleanEnemy1:				#Draw over the obstacle in black (clear)
 	lw $s1, 4($k0)
 	la $s0, black
 
 	# first row
-	#sw $s0, 0($s1)
 	sw $s0, -4($s1)
 	sw $s0, -8($s1)
 	sw $s0, -12($s1)
-	#sw $s0, -16($s1)
-	#sw $s0, -20($s1)
-	
+
 	#set to next row, rightmost pixel
 	addi $s1, $s1, 128
 	
@@ -736,7 +715,6 @@ cleanEnemy1:				#Draw over the obstacle (clear)
 	sw $s0, -8($s1)
 	sw $s0, -12($s1)
 	sw $s0, -16($s1)
-	#sw $s0, -20($s1)
 	
 	#set to next row, rightmost pixel
 	addi $s1, $s1, 128
@@ -780,23 +758,19 @@ cleanEnemy1:				#Draw over the obstacle (clear)
 	sw $s0, -8($s1)
 	sw $s0, -12($s1)
 	sw $s0, -16($s1)
-	#sw $s0, -20($s1)
 	
 	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 
-cleanEnemy2:
+cleanEnemy2:				#Draw over the obstacle in black (clear)
 	lw $s2, 8($k0)
 	la $s0, black
 	
 	# first row
-	#sw $s0, 0($s2)
 	sw $s0, -4($s2)
 	sw $s0, -8($s2)
 	sw $s0, -12($s2)
-	#sw $s0, -16($s2)
-	#sw $s0, -20($s2)
 	
 	#set to next row, rightmost pixel
 	addi $s2, $s2, 128
@@ -807,7 +781,6 @@ cleanEnemy2:
 	sw $s0, -8($s2)
 	sw $s0, -12($s2)
 	sw $s0, -16($s2)
-	#sw $s0, -20($s2)
 	
 	#set to next row, rightmost pixel
 	addi $s2, $s2, 128
@@ -846,28 +819,23 @@ cleanEnemy2:
 	addi $s2, $s2, 128
 	
 	# sixth row
-	#sw $s0, 0($s2)
 	sw $s0, -4($s2)
 	sw $s0, -8($s2)
 	sw $s0, -12($s2)
 	sw $s0, -16($s2)
-	#sw $s0, -20($s2)
 	
 	#return to line after function call
 	jr $ra
 	addi $0, $0, 0
 
-cleanEnemy3:
+cleanEnemy3:				#Draw over the obstacle in black (clear)
 	lw $s3, 12($k0)
 	la $s0, black
 
 	# first row
-	#sw $s0, 0($s3)
 	sw $s0, -4($s3)
 	sw $s0, -8($s3)
 	sw $s0, -12($s3)
-	#sw $s0, -16($s3)
-	#sw $s0, -20($s3)
 	
 	#set to next row, rightmost pixel
 	addi $s3, $s3, 128
@@ -993,9 +961,9 @@ keypress_happened:
 	addi $0, $0, 0
 	beq $t2, d_ASCII, respond_to_d 		# ASCII code of 'd' is 0x64 or 100 in decimal
 	addi $0, $0, 0
-	beq $t2, p_ASCII, reset 		# ASCII code of 'p' is 0x70 or 112 in decimal
+	beq $t2, p_ASCII, reset 			# ASCII code of 'p' is 0x70 or 112 in decimal
 	addi $0, $0, 0
-	j return				# if no desired keys are pressed then
+	j return					# if no desired keys are pressed then
 	addi $0, $0, 0
 respond_to_w:
 	# move up if not already at the top of the screen
@@ -1017,7 +985,7 @@ respond_to_a:
 	addi $0, $0, 0
 	la $s0, ship
 	lw $s1, 0($s0)
-	addi $s2, $zero, 6			# the left edge of the screen
+	addi $s2, $zero, 6				# the left edge of the screen
 	beq $s1, $s2, return			# if at the left edge of the screen return to game
 	addi $0, $0, 0
 	addi $s1, $s1, -1		
@@ -1030,11 +998,11 @@ respond_to_s:
 	addi $0, $0, 0
 	la $s0, ship
 	lw $s1, 4($s0)
-	addi $s1, $s1, 6			# get the right wing y coordinate
-	addi $s2, $zero, 30			# the bottom edge of the screen
+	addi $s1, $s1, 6				# get the right wing y coordinate
+	addi $s2, $zero, 30				# the bottom edge of the screen
 	beq $s1, $s2, return			# if at the top of the screen return to game	
 	addi $0, $0, 0			
-	# sw $s1, 12($s0)			#store the down move for the right edge
+	# sw $s1, 12($s0)				#store the down move for the right edge
 	lw $s1, 4($s0)
 	addi $s1, $s1, 1
 	sw $s1, 4($s0)				#store the down move 
@@ -1050,7 +1018,7 @@ respond_to_d:
 	addi $0, $0, 0
 	la $s0, ship
 	lw $s1, 0($s0)
-	addi $s2, $zero, 31			# the right edge of the screen
+	addi $s2, $zero, 31				# the right edge of the screen
 	beq $s1, $s2, return			# if at the left edge of the screen return to game
 	addi $0, $0, 0
 	addi $s1, $s1, 1		
@@ -1061,11 +1029,11 @@ return:
 	# need to draw the ship in the new position here
 	
 	la $t0, grey 			# load the grey colour
-	addi, $sp, $sp, -4 		# move stack up
+	addi, $sp, $sp, -4 			# move stack up
 	sw $t0, 0($sp) 			# store white into the stack
 	
 	la $t0, white			# load the white colour
-	addi, $sp, $sp, -4 		# move stack up
+	addi, $sp, $sp, -4 			# move stack up
 	sw $t0, 0($sp) 			# store white into the stack
 	
 	jal drawShip
@@ -1107,9 +1075,7 @@ reset:
 	sw $t1, 0($t0)			# reset health to 160
 	j startGamePhase
 	addi $0, $0, 0
-	# draw screen black
-#	jal drawBlackScreen
-	# reset score W
+
 #################################################################################################################################################
 # Health Bar
 #################################################################################################################################################
@@ -1125,57 +1091,57 @@ drawHealth:
 	blez $s4, gameOverPhase1
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 5		# if health is <= 5 return
+	addi $s5, $zero, 5			# if health is <= 5 return
 	sw $s0, -124($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 10		# if health is <= 10 return
+	addi $s5, $zero, 10			# if health is <= 10 return
 	sw $s0, -120($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 15		# if health is <= 15 return
+	addi $s5, $zero, 15			# if health is <= 15 return
 	sw $s0, -116($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 20		# if health is <=  20 return
+	addi $s5, $zero, 20			# if health is <=  20 return
 	sw $s0, -112($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 25		# if health is <=  25 return
+	addi $s5, $zero, 25			# if health is <=  25 return
 	sw $s0, -108($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 30		# if health is <= 30 return
+	addi $s5, $zero, 30			# if health is <= 30 return
 	sw $s0, -104($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 35		# if health is <= 35 return
+	addi $s5, $zero, 35			# if health is <= 35 return
 	sw $s0, -100($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 40		# if health is <=  40 return
+	addi $s5, $zero, 40			# if health is <=  40 return
 	sw $s0, -96($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 45		# if health is <= 45 return
+	addi $s5, $zero, 45			# if health is <= 45 return
 	sw $s0, -92($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 50		# if health is less than 50 return
+	addi $s5, $zero, 50			# if health is less than 50 return
 	sw $s0, -88($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
 	
-	addi $s5, $zero, 55		# if health is less than 55 return
+	addi $s5, $zero, 55			# if health is less than 55 return
 	sw $s0, -84($s1)
 	ble $s4, $s5, jump
 	addi $0, $0, 0
@@ -1336,13 +1302,13 @@ jump:
 # Clearing Stuff
 #################################################################################################################################################
 clearShip:
-	addi $sp, $sp, -4		# move stack up
+	addi $sp, $sp, -4			# move stack up
 	sw $ra, 0($sp)
 	
 	la $s0, black 			# load the black colour
-	addi, $sp, $sp, -4 		# move stack up
+	addi, $sp, $sp, -4 			# move stack up
 	sw $s0, 0($sp) 			# store white into the stack
-	addi, $sp, $sp, -4 		# move stack up
+	addi, $sp, $sp, -4 			# move stack up
 	sw $s0, 0($sp) 			# store white into the stack
 	
 	jal drawShip
@@ -1356,12 +1322,12 @@ clearShip:
 # Drawing the black screen for reset game
 #################################################################################################################################################
 drawBlackScreen:
-	addi $sp, $sp, -4 		# move stack up
+	addi $sp, $sp, -4 			# move stack up
 	sw $ra, 0($sp) 			#store return address into stack
 	
 	la $t0, screen			# load screen coordinates
 	lw $t1, 4($t0)			# load y screen coordinate
-	addi $t2, $zero, 33		# breaking condition for the y of screen
+	addi $t2, $zero, 33			# breaking condition for the y of screen
 	beq $t1, $t2, screenDone
 	addi $0, $0, 0
 	j drawBlackRow			# draw next row
@@ -1374,11 +1340,11 @@ drawBlackRow:
 	la $s2, screen	 		# $s2 holds the coordinate of the top right corner of the screen
 	lw $s3, 0($s2) 			# $s3 holds the x coordinate
 	lw $s4, 4($s2) 			# $s4 holds the y coordinate
-	sll $s4, $s4, 5 		# $s4 holds y coordinate * 32
-	add $s4, $s4, $s3 		# $s4 holds 32*y + x
+	sll $s4, $s4, 5 			# $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 			# $s4 holds 32*y + x
 	sll $s4, $s4, 2			# $s4 holds 4*(32*y + x)
 	la $s5, baseAddress 		# $s5 has the display address
-	add $s5, $s5, $s4 		# $s5 holds baseAddress + 4*(32*y + x)
+	add $s5, $s5, $s4 			# $s5 holds baseAddress + 4*(32*y + x)
 	
 	sw $s0, 0($s5)			# colour each pixel black
 	sw $s0, -4($s5)			
@@ -1414,7 +1380,7 @@ drawBlackRow:
 	sw $s0, -124($s5)
 	
 	lw $s4, 4($s2) 			# $s4 holds the y coordinate
-	addi $s4, $s4, 1		# add 1 to the y coordinate to move on to the next row.
+	addi $s4, $s4, 1			# add 1 to the y coordinate to move on to the next row.
 	sw $s4, 4($s2)			# store new y for screen
 	
 	j drawBlackScreen
@@ -1422,7 +1388,7 @@ drawBlackRow:
 
 screenDone:
 	lw $ra, 0($sp)			#store return address
-	addi $sp, $sp, 4		# move stack down
+	addi $sp, $sp, 4			# move stack down
 	la $t0, screen 			# load screen address
 	add $t1, $zero, $zero		# store reset value for y
 	sw $t1, 4($t0)			# store new y value
@@ -1499,11 +1465,11 @@ animateEndShip:
 	beq $t1, 31, gameOverPhase2
 	addi $0, $0, 0
 	la $t0, grey 			# load the grey colour
-	addi, $sp, $sp, -4 		# move stack up
+	addi, $sp, $sp, -4 			# move stack up
 	sw $t0, 0($sp) 			# store white into the stack
 	
 	la $t0, white			# load the white colour
-	addi, $sp, $sp, -4 		# move stack up
+	addi, $sp, $sp, -4 			# move stack up
 	sw $t0, 0($sp) 			# store white into the stack
 	
 	jal drawShip
@@ -1525,17 +1491,17 @@ bye:
 	j end
 	addi $0, $0, 0
 drawGameOver:
-	la $s0, red # load the red colour into $s0
-	la $s1, baseAddress # $s1 has the base address
-	la $s2, game # $s2 holds the top right corner of the word "game"
-	lw $s3, 0($s2) # $s3 holds the x coordinate
-	lw $s4, 4($s2) # $s4 holds the y coordinate
-	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
-	add $s4, $s4, $s3 # $s4 holds 32*y + x
-	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
-	la $s5, baseAddress # $s5 has the base address
-	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
-	sw $s0, 0($s5)#first row of the word game
+	la $s0, red			# load the red colour into $s0
+	la $s1, baseAddress 		# $s1 has the base address
+	la $s2, game			# $s2 holds the top right corner of the word "game"
+	lw $s3, 0($s2)			# $s3 holds the x coordinate
+	lw $s4, 4($s2)			# $s4 holds the y coordinate
+	sll $s4, $s4, 5 			# $s4 holds y coordinate * 32
+	add $s4, $s4, $s3 			# $s4 holds 32*y + x
+	sll $s4, $s4, 2 			# $s4 holds 4*(32*y + x)
+	la $s5, baseAddress 		# $s5 has the base address
+	add $s5, $s5, $s4 			# $s5 holds displayAddress + 4*(32*y + x)
+	sw $s0, 0($s5)			#first row of the word game
 	sw $s0, -4($s5)
 	sw $s0, -16($s5)
 	sw $s0, -20($s5)
@@ -1544,16 +1510,16 @@ drawGameOver:
 	sw $s0, -52($s5)
 	sw $s0, -56($s5)
 	sw $s0, -60($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, -4($s5) #second row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, -4($s5) 			#second row
 	sw $s0, -12($s5)
 	sw $s0, -20($s5)
 	sw $s0, -28($s5)
 	sw $s0, -36($s5)
 	sw $s0, -44($s5)
 	sw $s0, -60($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, -0($s5) #third row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, -0($s5) 			#third row
 	sw $s0, -4($s5) 
 	sw $s0, -12($s5)
 	sw $s0, -20($s5)
@@ -1563,8 +1529,8 @@ drawGameOver:
 	sw $s0, -44($s5)
 	sw $s0, -52($s5)
 	sw $s0, -60($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, -4($s5) #fourth row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, -4($s5) 			#fourth row
 	sw $s0, -12($s5)
 	sw $s0, -20($s5)
 	sw $s0, -28($s5)
@@ -1572,8 +1538,8 @@ drawGameOver:
 	sw $s0, -44($s5)
 	sw $s0, -52($s5)
 	sw $s0, -60($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, -0($s5) #fifth row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, -0($s5) 			#fifth row
 	sw $s0, -4($s5) 
 	sw $s0, -12($s5)
 	sw $s0, -20($s5)
@@ -1583,16 +1549,16 @@ drawGameOver:
 	sw $s0, -52($s5)
 	sw $s0, -56($s5)
 	sw $s0, -60($s5)
-	la $t1, baseAddress # $t1 has the base address
-	la $t2, over # $t2 holds the top right corner of the word "over"
-	lw $t2, 4($t2) # $t2 holds the y coordinate
-	sll $s5, $t2, 5 # $s5 holds y coordinate * 32
-	la $t2, over # $t2 holds the top right corner of the word "over"
-	lw $t2, 0($t2) # $t2 holds the x coordinate
-	add $s5, $s5, $t2 # $s5 holds 32*y + x
-	sll $s5, $s5, 2 # $s5 holds 4*(32*y + x)
-	add $s5, $s5, $t1 # $s5 holds 4*(32*y + x) + baseAddress
-	sw $s0, 0($s5)#first row of the word over
+	la $t1, baseAddress 		# $t1 has the base address
+	la $t2, over 			#$t2 holds the top right corner of the word "over"
+	lw $t2, 4($t2) 			#$t2 holds the y coordinate
+	sll $s5, $t2, 5 			#$s5 holds y coordinate * 32
+	la $t2, over 			#$t2 holds the top right corner of the word "over"
+	lw $t2, 0($t2) 			#$t2 holds the x coordinate
+	add $s5, $s5, $t2 			#$s5 holds 32*y + x
+	sll $s5, $s5, 2 			#$s5 holds 4*(32*y + x)
+	add $s5, $s5, $t1 			#$s5 holds 4*(32*y + x) + baseAddress
+	sw $s0, 0($s5)			#first row of the word over
 	sw $s0, -4($s5)
 	sw $s0, -8($s5)
 	sw $s0, -16($s5)
@@ -1602,16 +1568,16 @@ drawGameOver:
 	sw $s0, -44($s5)
 	sw $s0, -48($s5)
 	sw $s0, -52($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, 0($s5)# second row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, 0($s5)			#second row
 	sw $s0, -8($s5)
 	sw $s0, -20($s5)
 	sw $s0, -28($s5)
 	sw $s0, -36($s5)
 	sw $s0, -44($s5)
 	sw $s0, -52($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, 0($s5)# third row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, 0($s5)			#third row
 	sw $s0, -4($s5)
 	sw $s0, -8($s5)
 	sw $s0, -16($s5)
@@ -1620,16 +1586,16 @@ drawGameOver:
 	sw $s0, -36($s5)
 	sw $s0, -44($s5)
 	sw $s0, -52($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, -4($s5) # fourth row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, -4($s5) 			#fourth row
 	sw $s0, -8($s5)
 	sw $s0, -20($s5)
 	sw $s0, -28($s5)
 	sw $s0, -36($s5)
 	sw $s0, -44($s5)
 	sw $s0, -52($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, 0($s5)#fifth row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, 0($s5)			#fifth row
 	sw $s0, -8($s5)
 	sw $s0, -16($s5)
 	sw $s0, -20($s5)
@@ -1640,17 +1606,17 @@ drawGameOver:
 	jr $ra
 	addi $0, $0, 0
 drawScore:
-	la $s0, green # $s0 has the green colour
-	la $s1, baseAddress # $t1 has the base address
-	la $s2, score # $t2 holds the top right corner of the word "score"
-	lw $s3, 0($s2) # $s3 holds the x coordinate
-	lw $s4, 4($s2) # $s4 holds the y coordinate
-	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
-	add $s4, $s4, $s3 # $s4 holds 32*y + x
-	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
-	la $s5, baseAddress # $s5 has the base address
-	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
-	sw $s0, 0($s5)#first row of the word score
+	la $s0, green 			# $s0 has the green colour
+	la $s1, baseAddress 		# $t1 has the base address
+	la $s2, score 			#$t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) 			#$s3 holds the x coordinate
+	lw $s4, 4($s2) 			#$s4 holds the y coordinate
+	sll $s4, $s4, 5 			#$s4 holds y coordinate * 32
+	add $s4, $s4, $s3 			#$s4 holds 32*y + x
+	sll $s4, $s4, 2 			#$s4 holds 4*(32*y + x)
+	la $s5, baseAddress 		# $s5 has the base address
+	add $s5, $s5, $s4 			#$s5 holds displayAddress + 4*(32*y + x)
+	sw $s0, 0($s5)			#first row of the word score
 	sw $s0, -4($s5)
 	sw $s0, -12($s5)
 	sw $s0, -16($s5)
@@ -1664,8 +1630,8 @@ drawScore:
 	sw $s0, -60($s5)
 	sw $s0, -64($s5)
 	sw $s0, -68($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, 8($s5)# second row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, 8($s5)			#second row
 	sw $s0, -4($s5)
 	sw $s0, -12($s5)
 	sw $s0, -20($s5)
@@ -1673,8 +1639,8 @@ drawScore:
 	sw $s0, -36($s5)
 	sw $s0, -52($s5)
 	sw $s0, -68($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, 0($s5)# third row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, 0($s5)			#third row
 	sw $s0, -4($s5)
 	sw $s0, -12($s5)
 	sw $s0, -16($s5)
@@ -1685,8 +1651,8 @@ drawScore:
 	sw $s0, -60($s5)
 	sw $s0, -64($s5)
 	sw $s0, -68($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, 8($s5)# fourth row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, 8($s5)			#fourth row
 	sw $s0, -4($s5)
 	sw $s0, -16($s5)
 	sw $s0, -20($s5)
@@ -1694,8 +1660,8 @@ drawScore:
 	sw $s0, -36($s5)
 	sw $s0, -52($s5)
 	sw $s0, -60($s5)
-	addi $s5, $s5, 128 #set to next row, rightmost pixel
-	sw $s0, 0($s5)#fifth row
+	addi $s5, $s5, 128 			#set to next row, rightmost pixel
+	sw $s0, 0($s5)			#fifth row
 	sw $s0, -4($s5)
 	sw $s0, -12($s5)
 	sw $s0, -20($s5)
@@ -1711,8 +1677,8 @@ drawScore:
 	jr $ra
 	addi $0, $0, 0
 allEnemies:
-	addi $sp, $sp, -4 # move the stack up
-	sw $ra, 0($sp) # store the return address
+	addi $sp, $sp, -4			#move the stack up
+	sw $ra, 0($sp) 			#store the return address
 	jal enemyLocation
 	jal enemyLocation
 	jal enemyLocation
@@ -1720,22 +1686,22 @@ allEnemies:
 	jal enemyLocation
 	jal enemyLocation
 	jal enemyLocation
-	lw $ra, 0($sp) # load the return address
-	addi $sp, $sp, 4 # move the stack down
+	lw $ra, 0($sp) 			#load the return address
+	addi $sp, $sp, 4 			#move the stack down
 	jr $ra
 	addi $0, $0, 0
 drawSymbol_1:
-	la $s0, red # $s0 has the green colour
+	la $s0, red 			#$s0 has the green colour
 	la $s6, yellow
-	la $s1, baseAddress # $t1 has the base address
-	la $s2, symbol_1 # $t2 holds the top right corner of the word "score"
-	lw $s3, 0($s2) # $s3 holds the x coordinate
-	lw $s4, 4($s2) # $s4 holds the y coordinate
-	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
-	add $s4, $s4, $s3 # $s4 holds 32*y + x
-	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
-	la $s5, baseAddress # $s5 has the base address
-	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	la $s1, baseAddress 		#t1 has the base address
+	la $s2, symbol_1 			#$t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) 			#$s3 holds the x coordinate
+	lw $s4, 4($s2) 			#$s4 holds the y coordinate
+	sll $s4, $s4, 5 			#$s4 holds y coordinate * 32
+	add $s4, $s4, $s3 			#$s4 holds 32*y + x
+	sll $s4, $s4, 2 			#$s4 holds 4*(32*y + x)
+	la $s5, baseAddress 		#$s5 has the base address
+	add $s5, $s5, $s4 			#$s5 holds displayAddress + 4*(32*y + x)
 	
 	sw $s0, -8($s5)
 	
@@ -1769,17 +1735,17 @@ drawSymbol_1:
 	jr $ra
 	addi $0, $0, 0
 drawSymbol_2:
-	la $s0, red # $s0 has the green colour
+	la $s0, red 			#$s0 has the green colour
 	la $s6, yellow
-	la $s1, baseAddress # $t1 has the base address
-	la $s2, symbol_2 # $t2 holds the top right corner of the word "score"
-	lw $s3, 0($s2) # $s3 holds the x coordinate
-	lw $s4, 4($s2) # $s4 holds the y coordinate
-	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
-	add $s4, $s4, $s3 # $s4 holds 32*y + x
-	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
-	la $s5, baseAddress # $s5 has the base address
-	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	la $s1, baseAddress 		#$t1 has the base address
+	la $s2, symbol_2 			#$t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) 			#$s3 holds the x coordinate
+	lw $s4, 4($s2) 			#$s4 holds the y coordinate
+	sll $s4, $s4, 5 			#$s4 holds y coordinate * 32
+	add $s4, $s4, $s3 			#$s4 holds 32*y + x
+	sll $s4, $s4, 2 			#$s4 holds 4*(32*y + x)
+	la $s5, baseAddress 		#$s5 has the base address
+	add $s5, $s5, $s4 			#$s5 holds displayAddress + 4*(32*y + x)
 	
 	sw $s0, -8($s5)
 	
@@ -1813,17 +1779,17 @@ drawSymbol_2:
 	jr $ra
 	addi $0, $0, 0
 drawSymbol_3:
-	la $s0, red # $s0 has the green colour
+	la $s0, red 			#$s0 has the green colour
 	la $s6, yellow
-	la $s1, baseAddress # $t1 has the base address
-	la $s2, symbol_3 # $t2 holds the top right corner of the word "score"
-	lw $s3, 0($s2) # $s3 holds the x coordinate
-	lw $s4, 4($s2) # $s4 holds the y coordinate
-	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
-	add $s4, $s4, $s3 # $s4 holds 32*y + x
-	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
-	la $s5, baseAddress # $s5 has the base address
-	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	la $s1, baseAddress 		#$t1 has the base address
+	la $s2, symbol_3 			#$t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) 			#$s3 holds the x coordinate
+	lw $s4, 4($s2)			#$s4 holds the y coordinate
+	sll $s4, $s4, 5 			#$s4 holds y coordinate * 32
+	add $s4, $s4, $s3 			#$s4 holds 32*y + x
+	sll $s4, $s4, 2 			#$s4 holds 4*(32*y + x)
+	la $s5, baseAddress 		#$s5 has the base address
+	add $s5, $s5, $s4 			#$s5 holds displayAddress + 4*(32*y + x)
 	
 	sw $s0, -8($s5)
 	
@@ -1857,17 +1823,17 @@ drawSymbol_3:
 	jr $ra
 	addi $0, $0, 0
 drawSymbol_4:
-	la $s0, red # $s0 has the green colour
+	la $s0, red 			#$s0 has the green colour
 	la $s6, yellow
-	la $s1, baseAddress # $t1 has the base address
-	la $s2, symbol_4 # $t2 holds the top right corner of the word "score"
-	lw $s3, 0($s2) # $s3 holds the x coordinate
-	lw $s4, 4($s2) # $s4 holds the y coordinate
-	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
-	add $s4, $s4, $s3 # $s4 holds 32*y + x
-	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
-	la $s5, baseAddress # $s5 has the base address
-	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	la $s1, baseAddress 		#$t1 has the base address
+	la $s2, symbol_4 			#$t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) 			#$s3 holds the x coordinate
+	lw $s4, 4($s2) 			#$s4 holds the y coordinate
+	sll $s4, $s4, 5 			#$s4 holds y coordinate * 32
+	add $s4, $s4, $s3 			#$s4 holds 32*y + x
+	sll $s4, $s4, 2 			#$s4 holds 4*(32*y + x)
+	la $s5, baseAddress 		#$s5 has the base address
+	add $s5, $s5, $s4 			#$s5 holds displayAddress + 4*(32*y + x)
 	
 	sw $s0, -8($s5)
 	
@@ -1901,17 +1867,17 @@ drawSymbol_4:
 	jr $ra
 	addi $0, $0, 0
 drawSymbol_5:
-	la $s0, red # $s0 has the green colour
+	la $s0, red 			#$s0 has the green colour
 	la $s6, yellow
-	la $s1, baseAddress # $t1 has the base address
-	la $s2, symbol_5 # $t2 holds the top right corner of the word "score"
-	lw $s3, 0($s2) # $s3 holds the x coordinate
-	lw $s4, 4($s2) # $s4 holds the y coordinate
-	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
-	add $s4, $s4, $s3 # $s4 holds 32*y + x
-	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
-	la $s5, baseAddress # $s5 has the base address
-	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
+	la $s1, baseAddress 		#$t1 has the base address
+	la $s2, symbol_5 			#$t2 holds the top right corner of the word "score"
+	lw $s3, 0($s2) 			#$s3 holds the x coordinate
+	lw $s4, 4($s2) 			#$s4 holds the y coordinate
+	sll $s4, $s4, 5 			#$s4 holds y coordinate * 32
+	add $s4, $s4, $s3 			#$s4 holds 32*y + x
+	sll $s4, $s4, 2 			#$s4 holds 4*(32*y + x)
+	la $s5, baseAddress 		#$s5 has the base address
+	add $s5, $s5, $s4 			#$s5 holds displayAddress + 4*(32*y + x)
 	
 	sw $s0, -8($s5)
 	
@@ -1948,17 +1914,17 @@ drawSymbol_5:
 # Start Game Screen
 #################################################################################################################################################
 drawStartGame:
-	la $s0, green # load the red colour into $s0
-	la $s1, baseAddress # $s1 has the base address
-	la $s2, start # $s2 holds the top right corner of the word "game"
-	lw $s3, 0($s2) # $s3 holds the x coordinate
-	lw $s4, 4($s2) # $s4 holds the y coordinate
-	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
-	add $s4, $s4, $s3 # $s4 holds 32*y + x
-	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
-	la $s5, baseAddress # $s5 has the base address
-	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
-	sw $s0, 0($s5)#first row of the word game
+	la $s0, green 			#load the red colour into $s0
+	la $s1, baseAddress 		#$s1 has the base address
+	la $s2, start 			#$s2 holds the top right corner of the word "game"
+	lw $s3, 0($s2) 			#$s3 holds the x coordinate
+	lw $s4, 4($s2) 			#$s4 holds the y coordinate
+	sll $s4, $s4, 5 			#$s4 holds y coordinate * 32
+	add $s4, $s4, $s3 			#$s4 holds 32*y + x
+	sll $s4, $s4, 2 			#$s4 holds 4*(32*y + x)
+	la $s5, baseAddress 		#$s5 has the base address
+	add $s5, $s5, $s4 			#$s5 holds displayAddress + 4*(32*y + x)
+	sw $s0, 0($s5)			#first row of the word game
 	sw $s0, -4($s5)
 	sw $s0, -8($s5)
 	sw $s0, -16($s5)
@@ -2009,17 +1975,17 @@ drawStartGame:
 	sw $s0, -64($s5)
 	sw $s0, -68($s5)
 	sw $s0, -72($s5)
-	la $s0, green # load the red colour into $s0
-	la $s1, baseAddress # $s1 has the base address
-	la $s2, s_game # $s2 holds the top right corner of the word "game"
-	lw $s3, 0($s2) # $s3 holds the x coordinate
-	lw $s4, 4($s2) # $s4 holds the y coordinate
-	sll $s4, $s4, 5 # $s4 holds y coordinate * 32
-	add $s4, $s4, $s3 # $s4 holds 32*y + x
-	sll $s4, $s4, 2 # $s4 holds 4*(32*y + x)
-	la $s5, baseAddress # $s5 has the base address
-	add $s5, $s5, $s4 # $s5 holds displayAddress + 4*(32*y + x)
-	sw $s0, 0($s5)#first row of the word game
+	la $s0, green 			#load the red colour into $s0
+	la $s1, baseAddress 		#$s1 has the base address
+	la $s2, s_game 			#$s2 holds the top right corner of the word "game"
+	lw $s3, 0($s2) 			#$s3 holds the x coordinate
+	lw $s4, 4($s2) 			#$s4 holds the y coordinate
+	sll $s4, $s4, 5 			#$s4 holds y coordinate * 32
+	add $s4, $s4, $s3 			#$s4 holds 32*y + x
+	sll $s4, $s4, 2 			#$s4 holds 4*(32*y + x)
+	la $s5, baseAddress 		#$s5 has the base address
+	add $s5, $s5, $s4 			#$s5 holds displayAddress + 4*(32*y + x)
+	sw $s0, 0($s5)			#first row of the word game
 	sw $s0, -4($s5)
 	sw $s0, -16($s5)
 	sw $s0, -20($s5)
@@ -2073,35 +2039,35 @@ drawStartGame:
 # Collision Detection
 #################################################################################################################################################
 CheckCollision:
-	addi $sp, $sp, -4 		# move stack up
+	addi $sp, $sp, -4 			# move stack up
 	sw $ra, 0($sp) 			# save the return addres
 	la $s2, ship 			# $s2 load the top right corner of the ship
 	lw $s3, 0($s2)			# $s3 has the x coordinate
 	lw $s4, 4($s2)			# $s4 holds the y coordinate
 	sll $s4, $s4, 5			# $s4 holds y * 32
-	add $s4, $s4, $s3		# $s4 holds y * 32 + x
-	sll $s4, $s4, 2 		# $s4 holds 4 * (y * 32 + x)
+	add $s4, $s4, $s3			# $s4 holds y * 32 + x
+	sll $s4, $s4, 2 			# $s4 holds 4 * (y * 32 + x)
 	add $s5, $s4, $zero
 	la $s5, baseAddress		
 	add $s5, $s5, $s4
-	addi $s6, $s5, 0		#move the starting coord to $s6
+	addi $s6, $s5, 0			#move the starting coord to $s6
 	
 	jal shipchck
 	addi $0, $0, 0
 	
 hitted:	#j main
 	lw $ra, 0($sp) 			# restor this function's return adress
-	addi $sp, $sp, 4 		# move the stack down
+	addi $sp, $sp, 4 			# move the stack down
 	
 	jr $ra
 	addi $0, $0, 0
 
 shipchck:	
-	addi $sp, $sp, -4 		# move stack up
+	addi $sp, $sp, -4 			# move stack up
 	sw $ra, 0($sp) 			# save the return addres
 	
-	addi $s6, $s6, -8
-	li $t8, -1
+	addi $s6, $s6, -8			#cycels through each collideable hitbox on the shi, checking for collisions
+	li $t8, -1			#0/1 value to determine graze
 	sw $t8, 4($a3)
 	jal checkOC
 	addi $0, $0, 0
@@ -2126,16 +2092,16 @@ shipchck:
 	addi $0, $0, 0
  
  	lw $ra, 0($sp) 			# restor this function's return adress
-	addi $sp, $sp, 4 		# move the stack down
+	addi $sp, $sp, 4 			# move the stack down
 	
 	jr $ra
 	addi $0, $0, 0
 	
 checkOC: 	
-	addi $sp, $sp, -4 		# move stack up
+	addi $sp, $sp, -4 			# move stack up
 	sw $ra, 0($sp) 			# save the return addres
 
-	lw $s7, 4($k0)
+	lw $s7, 4($k0)			#cycles through each obstacle and checks them for collisions
 	jal collide
 	addi $0, $0, 0
 	lw $s7, 8($k0)
@@ -2146,14 +2112,14 @@ checkOC:
 	addi $0, $0, 0
 	
 	lw $ra, 0($sp) 			# restor this function's return adress
-	addi $sp, $sp, 4 		# move the stack down
+	addi $sp, $sp, 4 			# move the stack down
 	
 	jr $ra
 	addi $0, $0, 0
 	
 collide:	
-	addi $sp, $sp, -4 		# move stack up
-	sw $ra, 0($sp) 		# save the return addres
+	addi $sp, $sp, -4 			# move stack up
+	sw $ra, 0($sp) 			# save the return addres
 	
 	addi $s7, $s7, -12			#cycles through the collideable pixels in the obstacle with the given ship pixed ($s6)
 	beq $s6, $s7, hitDetected
@@ -2175,37 +2141,37 @@ collide:
 	addi $0, $0, 0
 	
 	lw $ra, 0($sp) 			# restor this function's return adress
-	addi $sp, $sp, 4 		# move the stack down
+	addi $sp, $sp, 4 			# move the stack down
 	
 	jr $ra
 	addi $0, $0, 0
 	
 hitDetected:
-	lw $t8, 4($a3)
+	lw $t8, 4($a3)			#the pixels overlapped; collision detected
 	beqz $t8, hit
 	addi $0, $0, 0
-	bltz $t8, tgraze
+	bltz $t8, tgraze			#checks for grazes
 	addi $0, $0, 0
-	bgtz $t8, bgraze
+	bgtz $t8, bgraze			#checks for grazes
 	addi $0, $0, 0
 
-hit:	lw $t8, 0($k0)
+hit:	lw $t8, 0($k0)			#regular hit; add to # of collisions
 	addi $t8, $t8, 1
 	sw $t8, 0($k0)
-	
-	la $s0, health
+		
+	la $s0, health			#decrease health
 	lw $s1, 0($s0)
 	addi $s1, $s1, -10
 	sw $s1, 0($s0)
 	
-	jal clearHealth
+	jal clearHealth			#clear and redraw new health
 	addi $0, $0, 0
 	jal drawHealth
 	addi $0, $0, 0
 	
 	j ocout
 	
-tgraze:	lw $t8, 8($a3)
+tgraze:	lw $t8, 8($a3)			#graze on the top wing; add to # of collisions
 	addi $t8, $t8, 1
 	sw $t8, 8($a3)
 	
@@ -2213,13 +2179,13 @@ tgraze:	lw $t8, 8($a3)
 	lw $s3, 0($s2)			# $s3 has the x coordinate
 	lw $s4, 4($s2)			# $s4 holds the y coordinate
 	sll $s4, $s4, 5			# $s4 holds y * 32
-	add $s4, $s4, $s3		# $s4 holds y * 32 + x
-	sll $s4, $s4, 2 		# $s4 holds 4 * (y * 32 + x)
+	add $s4, $s4, $s3			# $s4 holds y * 32 + x
+	sll $s4, $s4, 2 			# $s4 holds 4 * (y * 32 + x)
 	add $s5, $s4, $zero
 	la $s5, baseAddress		
 	add $s5, $s5, $s4
 	
-	la $s0, health
+	la $s0, health			#decrease health (less health is subtracted than a regular hit)
 	lw $s1, 0($s0)
 	addi $s1, $s1, -5
 	sw $s1, 0($s0)
@@ -2231,14 +2197,14 @@ tgraze:	lw $t8, 8($a3)
 	li $a0, 150
 	syscall
 	
-	jal clearHealth
+	jal clearHealth			#clear and redraw new health
 	addi $0, $0, 0
 	jal drawHealth
 	addi $0, $0, 0
 	
 	j ocout
 	
-bgraze:	lw $t8, 8($a3)
+bgraze:	lw $t8, 8($a3)			#graze on the bottom wing; add to # of collisions
 	addi $t8, $t8, 1
 	sw $t8, 8($a3)
 	
@@ -2246,13 +2212,13 @@ bgraze:	lw $t8, 8($a3)
 	lw $s3, 0($s2)			# $s3 has the x coordinate
 	lw $s4, 4($s2)			# $s4 holds the y coordinate
 	sll $s4, $s4, 5			# $s4 holds y * 32
-	add $s4, $s4, $s3		# $s4 holds y * 32 + x
-	sll $s4, $s4, 2 		# $s4 holds 4 * (y * 32 + x)
+	add $s4, $s4, $s3			# $s4 holds y * 32 + x
+	sll $s4, $s4, 2 			# $s4 holds 4 * (y * 32 + x)
 	add $s5, $s4, $zero
 	la $s5, baseAddress		
 	add $s5, $s5, $s4
 	
-	la $s0, health
+	la $s0, health			#decrease health (less health is subtracted than a regular hit)
 	lw $s1, 0($s0)
 	addi $s1, $s1, -5
 	sw $s1, 0($s0)
@@ -2264,14 +2230,14 @@ bgraze:	lw $t8, 8($a3)
 	li $a0, 150
 	syscall
 	
-	jal clearHealth
+	jal clearHealth			#clear and redraw new health
 	addi $0, $0, 0
 	jal drawHealth
 	addi $0, $0, 0
 	
 	j ocout
 	
-ocout:	j hitted
+ocout:	j hitted				#jump back to leave collision checks
 	addi $0, $0, 0
 	
 end:	# gracefully terminate the program
