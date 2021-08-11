@@ -14,7 +14,9 @@
 #
 # Which milestones have been reached in this submission?
 # (See the assignment handout for descriptions of the milestones)
-# - Milestone 3 (choose the one that applies)
+# - Milestone 1
+# - Milestone 2
+# - Milestone 3 
 #
 # Which approved features have been implemented for milestone 3?
 # (See the assignment handout for the list of additional features)
@@ -24,11 +26,10 @@
 
 #
 # Link to video demonstration for final submission:
-# - (insert YouTube / MyMedia / other URL here). Make sure we can view it!
+# https://play.library.utoronto.ca/watch/c771f75cedd20ccc78f4f3281774c3cb
 #
 # Are you OK with us sharing the video with people outside course staff?
-# - yes / no / yes, and please share this project github link as well!
-#
+# yes
 # Any additional information that the TA needs to know:
 # - We added added a cool start screen that we would like to be considered for extra credit.
 #
